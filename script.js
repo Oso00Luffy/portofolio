@@ -11,7 +11,18 @@
 window.onscroll = function () {
   scrollFunction();
 };
-
+import { Analytics } from '@vercel/analytics/react';
+ 
+function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      <Component {...pageProps} />
+      <Analytics debug={false} />
+    </>
+  );
+}
+ 
+export default MyApp;
 // Set the scrollTop of the document body to 0
 document.body.scrollTop = 0;
 
