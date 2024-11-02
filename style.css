@@ -631,7 +631,7 @@
   }
   
   .about_para p:first-child {
-    text-indent: 3em;
+    text-indent: 1em;
   }
   
   .about_para p:nth-child(2) {
