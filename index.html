@@ -488,30 +488,7 @@
         </div>
       </div>
     </div>
-    <div class="contact">
-      <div class="contact_inside">
-        <div class="contact_heading">
-          <h1>Contact</h1>
-        </div>
-        <form method="post" onsubmit="handleFormSubmit(event)">
-          <div class="name">
-            <label for="id_name">Name:</label>
-            <input type="text" id="id_name" name="name" maxlength="20" placeholder="Name" required>
-          </div>
-          <div class="email">
-            <label for="id_email">Email:</label>
-            <input type="email" id="id_email" name="email" maxlength="50" placeholder="Email" required>
-          </div>
-          <div class="message">
-            <label for="id_message">Message:</label>
-            <textarea id="id_message" name="message" rows="4" cols="50" maxlength="500" required></textarea>
-          </div>
-          <div class="submit_btn">
-            <button class="btn_pro github" type="submit">Submit</button>
-          </div>
-        </form>
-      </div>
-    </div>
+   
     <div class="footer">
       <div class="link_icon">
         <div>
@@ -572,7 +549,7 @@
   <script>
     function handleFormSubmit(event) {
       event.preventDefault(); // Prevent the default form submission
-      alert('Thank you for your message! We will get back to you soon.')
+      alert('Thank you for your message! I will get back to you soon.')
       // Get the form elements by their IDs
       const nameInput = document.getElementById("id_name");
       const emailInput = document.getElementById("id_email");
