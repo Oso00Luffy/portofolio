@@ -64,10 +64,10 @@
   /* -------------------------------- */
   
   .dark_btn {
-     display: none; 
-     background-image: url('../img/icons8-double-up.gif');
-     background-position: center; 
-     background-size: cover; 
+    /* display: none; */
+    /* background-image: url('../img/icons8-double-up.gif'); */
+    /* background-position: center; */
+    /* background-size: cover; */
     position: fixed;
     bottom: 20px;
     right: 20px;
