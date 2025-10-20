@@ -284,3 +284,27 @@ dark_btn.addEventListener("click", () => {
     }
   }
 });
+// Image Slideshow for SCC App Project
+let sccSlideIndex = 0;
+const sccImageContainer = document.querySelector('.new_pro1 .inner_img');
+
+if (sccImageContainer) {
+  const sccImages = sccImageContainer.querySelectorAll('img');
+  const imageWidth = sccImages[0]?.offsetWidth || 0;
+  const slideInterval = 3000; // 3 seconds per slide
+
+  function showNextSlide() {
+    sccSlideIndex++;
+    if (sccSlideIndex >= sccImages.length) {
+      sccSlideIndex = 0;
+    }
+    const offset = -(sccSlideIndex * (imageWidth + 10)); // 10px is margin-right
+    sccImageContainer.style.transform = `translateX(10{offset}px)`; sccImageContainer.style.transition = 'transform 0.5s ease-in-out';
+  }
+
+  // Auto-play slideshow
+  setInterval(showNextSlide, slideInterval);
+
+  // Optional: Add click navigation
+  sccImageContainer.addEventListener('click', showNextSlide);
+}

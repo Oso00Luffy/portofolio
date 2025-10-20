@@ -555,41 +555,66 @@
         <div class="new_pro1">
           <div class="new_pro_img">
             <div class="outer_iframe">
-              <div class="iframe-embed-wrapper iframe-embed-responsive-16by9">
-                <iframe id="light" class="iframe-embed" title="image" src="image\Screenshot 2024-11-02 163012.png" title="website image" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
-                </iframe>
+              <div class="img">
+                <div class="inner_img" id="scc-slideshow">
+                  <img src="Project_Images/Screenshot 2025-10-20 202554.png" alt="SCC App Screenshot 1" class="active" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202608.png" alt="SCC App Screenshot 2" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202614.png" alt="SCC App Screenshot 3" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202630.png" alt="SCC App Screenshot 4" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202652.png" alt="SCC App Screenshot 5" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202658.png" alt="SCC App Screenshot 6" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202709.png" alt="SCC App Screenshot 7" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202716.png" alt="SCC App Screenshot 8" />
+                  <img src="Project_Images/Screenshot 2025-10-20 202722.png" alt="SCC App Screenshot 9" />
+                </div>
+                <div class="l_arrow" id="scc-prev">
+                  <p>
+                    <img src="https://img.icons8.com/nolan/64/00C6FF/0072FF/circled-chevron-left.png" alt="Previous" />
+                  </p>
+                </div>
+                <div class="r_arrow" id="scc-next">
+                  <p>
+                    <img src="https://img.icons8.com/nolan/64/00C6FF/0072FF/circled-chevron-right.png" alt="Next" />
+                  </p>
+                </div>
               </div>
             </div>
           </div>
           <div class="new_pro_des">
             <div>
               <h3>
-                HSR Arabic - Honkai: Star Rail Resource Hub
+                SCC App - Smart Campus Connect
               </h3>
-              
-                <span> Aim:</span> This project aims to provide a comprehensive resource hub for Arabic-speaking players of Honkai: Star Rail. It consolidates valuable game information, including character builds, lightcone strategies, and skill analyses, to enhance the gaming experience for its users.
+              <p>
+                <span> Aim:</span> SCC App is a comprehensive mobile application designed to enhance campus life for students. It provides seamless access to essential academic services, campus information, and social features, creating a connected and efficient university experience. The app serves as a one-stop solution for students to manage their academic journey, stay informed about campus events, and connect with peers.
                 <br />
                 <br />
-                <span> Technology used:</span> <br /> <b>Framework:</b> Vite <br />
-                <b>Programming Languages:</b> HTML, CSS, JavaScript <br />
-                <b>Hosting Platform:</b> Vercel
+                <span> Technology used:</span> <br /> <b>Frontend:</b> Flutter (Dart) <br />
+                <b>Backend:</b> Firebase (Authentication, Firestore Database, Cloud Functions, Storage) <br />
+                <b>State Management:</b> Provider/Riverpod <br />
+                <b>APIs:</b> RESTful APIs, Google Maps API <br />
+                <b>Platform:</b> Cross-platform (iOS & Android)
                 <br />
                 <br />
-                <span> Deal with:</span> <br /> Content Organization: Easy access to character builds and guides. <br />
-                Localization: Accurate Arabic translations and culturally relevant content. <br />
-                Responsive Design: Optimized for various devices. <br />
-                Data Updates: Regularly refreshed to reflect game updates. <br />
-                Community Engagement: Encourages player feedback and contributions.
+                <span> Key Features:</span> <br /> 
+                📱 User Authentication & Profile Management <br />
+                📚 Course Schedule & Academic Calendar <br />
+                📢 Campus News & Event Notifications <br />
+                🗺️ Interactive Campus Map & Navigation <br />
+                💬 Student Community & Social Features <br />
+                📊 Grade Tracking & Academic Progress <br />
+                🎓 Resource Sharing & Study Groups <br />
+                🔔 Real-time Push Notifications
                 
               </p>
               <div class="pro_btn">
                 <div class="btn_pro github">
-                  <a href="https://hsr-arabic.vercel.app/" target="_blank" class="link" rel="noopener">
+                  <a href="https://sccapp-c3165.web.app/" target="_blank" class="link" rel="noopener">
                     <span>view</span>
                   </a>
                 </div>
                 <div class="btn_pro github">
-                  <a href="https://github.com/devnamdev2003/result_automation_system" target="_blank" class="link" rel="noopener">
+                  <a href="https://github.com/Oso00Luffy/Graduation_Project" target="_blank" class="link" rel="noopener">
                     <span>github</span>
                   </a>
                 </div>
@@ -676,18 +701,18 @@
           <div class="new_pro2_img new_pro2_img2">
             <div class="outer_iframe">
               <div class="img">
-                <div class="l_arrow">
+                <div class="l_arrow" id="pc-prev">
                   <p>
                     <img src="https://img.icons8.com/nolan/50/00C6FF/0072FF/double-left.png" alt="left_icon" />
                   </p>
                 </div>
-                <div class="r_arrow">
+                <div class="r_arrow" id="pc-next">
                   <p>
                     <img src="https://img.icons8.com/nolan/50/00C6FF/0072FF/double-right.png" alt="right_icon" />
                   </p>
                 </div>
-                <div class="inner_img" id="light">
-                  <img src="https://devnamdev2003.github.io/img/Pc/1.png" alt="" />
+                <div class="inner_img" id="pc-slideshow">
+                  <img src="https://devnamdev2003.github.io/img/Pc/1.png" alt="" class="active" />
                   <img src="https://devnamdev2003.github.io/img/Pc/2.png" alt="" />
                   <img src="https://devnamdev2003.github.io/img/Pc/3.png" alt="" />
                   <img src="https://devnamdev2003.github.io/img/Pc/4.png" alt="" />
@@ -835,6 +860,4 @@
 </html>
 <!-- partial -->
   <script  src="./script.js"></script>
-
-</body>
-</html>
+  <script  src="./slideshow.js"></script>
