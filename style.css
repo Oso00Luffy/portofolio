@@ -686,6 +686,87 @@
     width: 50%;
     margin: auto;
   }
+
+  /* Education within About Section */
+  .about_education {
+    margin-top: 4rem;
+    padding: 3rem;
+    background: linear-gradient(145deg, #f0f4f8, #ffffff);
+    border-radius: 2rem;
+    box-shadow: 0.5rem 0.5rem 1rem #c8d0e7, -0.3rem -0.3rem 0.8rem white;
+  }
+
+  .education_heading {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .education_item {
+    padding: 2rem;
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0.3rem 0.3rem 0.6rem #e0e6ed, -0.2rem -0.2rem 0.5rem white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .education_item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0.5rem 0.5rem 1.5rem #c8d0e7, -0.3rem -0.3rem 0.8rem white;
+  }
+
+  .education_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .education_header h3 {
+    font-size: 2.2rem;
+    color: #0072FF;
+    margin: 0;
+    transition: color 0.3s ease;
+  }
+
+  .education_header a:hover h3 {
+    color: #00C6FF;
+  }
+
+  .education_year {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #00C6FF;
+    background: linear-gradient(145deg, #e6f7ff, #f0f9ff);
+    padding: 0.5rem 1.5rem;
+    border-radius: 2rem;
+    box-shadow: 0.2rem 0.2rem 0.4rem #c8d0e7;
+  }
+
+  .education_institution {
+    font-size: 1.8rem;
+    color: #4a5568;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .education_details {
+    font-size: 1.6rem;
+    color: #2d3748;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  .education_details strong {
+    color: #0072FF;
+    font-weight: 600;
+  }
   
   @media (max-width: 1200px) {
     .about_img {
@@ -754,6 +835,33 @@
   
     .about_para p:nth-child(2) {
       text-align: center;
+    }
+
+    .about_education {
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+
+    .education_heading {
+      font-size: 2.4rem;
+    }
+
+    .education_header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .education_header h3 {
+      font-size: 2rem;
+    }
+
+    .education_year {
+      font-size: 1.4rem;
+    }
+
+    .education_institution,
+    .education_details {
+      font-size: 1.5rem;
     }
   }
   
