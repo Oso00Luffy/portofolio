@@ -1,4 +1,77 @@
 "use strict";
+
+// Modern Scroll Animation with Intersection Observer
+document.addEventListener('DOMContentLoaded', function() {
+  // Add animation classes to elements
+  const animateOnScroll = document.querySelectorAll('.about, .education, .skills, .new_project, .new_pro1, .certifications');
+  
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.animation = 'fadeInUp 0.8s ease forwards';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+  
+  animateOnScroll.forEach(element => {
+    element.style.opacity = '0';
+    observer.observe(element);
+  });
+
+  // Stagger animations for child elements
+  const skillItems = document.querySelectorAll('.skill');
+  skillItems.forEach((item, index) => {
+    item.style.animation = `fadeInUp 0.8s ease ${index * 0.1}s forwards`;
+    item.style.opacity = '0';
+  });
+
+  const projectCards = document.querySelectorAll('.new_pro1');
+  projectCards.forEach((card, index) => {
+    card.style.animation = `fadeInUp 0.8s ease ${index * 0.2}s forwards`;
+    card.style.opacity = '0';
+  });
+
+  // Add hover effects for interactive elements
+  document.querySelectorAll('a.link, .skill img, .cert_link').forEach(element => {
+    element.addEventListener('mouseenter', function() {
+      this.style.transition = 'all 0.3s ease';
+    });
+  });
+
+  // Hamburger menu toggle functionality
+  const hamburgerBtn = document.querySelector('.outer');
+  const menuLinks = document.querySelectorAll('.btn a');
+
+  if (hamburgerBtn) {
+    // Toggle menu on hamburger click
+    hamburgerBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      this.classList.toggle('active');
+    });
+
+    // Close menu when a link is clicked
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        hamburgerBtn.classList.remove('active');
+      });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!hamburgerBtn.contains(e.target) && hamburgerBtn.classList.contains('active')) {
+        hamburgerBtn.classList.remove('active');
+      }
+    });
+  }
+});
+
 // let topbtn = document.querySelector(".topbtn");
 // topbtn.addEventListener("click", () => {
 //       document.body.scrollTop = 0;
@@ -11,18 +84,6 @@
 window.onscroll = function () {
   scrollFunction();
 };
-import { Analytics } from '@vercel/analytics/react';
- 
-function MyApp({ Component, pageProps }) {
-  return (
-    <>
-      <Component {...pageProps} />
-      <Analytics debug={false} />
-    </>
-  );
-}
- 
-export default MyApp;
 // Set the scrollTop of the document body to 0
 document.body.scrollTop = 0;
 
