@@ -569,15 +569,38 @@ button { font-family: var(--font); }
 .skill-category-card {
   background: var(--card);
   border: 1px solid var(--border);
+  border-top: 3px solid var(--card-accent, var(--border));
   border-radius: var(--radius);
   padding: 2.4rem;
-  transition: border-color var(--t), background var(--t), transform var(--t);
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--t), background var(--t), transform var(--t), box-shadow var(--t);
+}
+.skill-category-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, var(--card-accent-bg, transparent) 0%, transparent 55%);
+  pointer-events: none;
+  border-radius: inherit;
 }
 .skill-category-card:hover {
-  border-color: var(--border-glow);
-  background: var(--card-hover);
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 36px var(--card-accent-shadow, rgba(0,198,255,0.1));
+  border-color: var(--card-accent, var(--border-glow));
+  border-top-color: var(--card-accent, var(--border-glow));
 }
+
+/* ── Category color tokens ── */
+.card-red    { --card-accent: #ff4757; --card-accent-bg: rgba(255,71,87,0.07);  --card-accent-shadow: rgba(255,71,87,0.18);  --tag-color: #ff6b7a; --tag-bg: rgba(255,71,87,0.1);  --tag-border: rgba(255,71,87,0.28); }
+.card-blue   { --card-accent: #00c6ff; --card-accent-bg: rgba(0,198,255,0.07);  --card-accent-shadow: rgba(0,198,255,0.18);  --tag-color: #00d4ff; --tag-bg: rgba(0,198,255,0.1);  --tag-border: rgba(0,198,255,0.28); }
+.card-purple { --card-accent: #7f5af0; --card-accent-bg: rgba(127,90,240,0.07); --card-accent-shadow: rgba(127,90,240,0.18); --tag-color: #9b76ff; --tag-bg: rgba(127,90,240,0.1); --tag-border: rgba(127,90,240,0.28); }
+.card-teal   { --card-accent: #0be881; --card-accent-bg: rgba(11,232,129,0.07); --card-accent-shadow: rgba(11,232,129,0.18); --tag-color: #1aee8e; --tag-bg: rgba(11,232,129,0.1); --tag-border: rgba(11,232,129,0.28); }
+.card-orange { --card-accent: #ff9f43; --card-accent-bg: rgba(255,159,67,0.07); --card-accent-shadow: rgba(255,159,67,0.18); --tag-color: #ffb066; --tag-bg: rgba(255,159,67,0.1); --tag-border: rgba(255,159,67,0.28); }
+.card-cyan   { --card-accent: #48dbfb; --card-accent-bg: rgba(72,219,251,0.07); --card-accent-shadow: rgba(72,219,251,0.18); --tag-color: #5ee6ff; --tag-bg: rgba(72,219,251,0.1); --tag-border: rgba(72,219,251,0.28); }
+.card-pink   { --card-accent: #fd79a8; --card-accent-bg: rgba(253,121,168,0.07);--card-accent-shadow: rgba(253,121,168,0.18);--tag-color: #ff8fbe; --tag-bg: rgba(253,121,168,0.1);--tag-border: rgba(253,121,168,0.28); }
+.card-green  { --card-accent: #1dd1a1; --card-accent-bg: rgba(29,209,161,0.07); --card-accent-shadow: rgba(29,209,161,0.18); --tag-color: #26e0ad; --tag-bg: rgba(29,209,161,0.1); --tag-border: rgba(29,209,161,0.28); }
+.card-lavender { --card-accent: #a29bfe; --card-accent-bg: rgba(162,155,254,0.07); --card-accent-shadow: rgba(162,155,254,0.18); --tag-color: #b5afff; --tag-bg: rgba(162,155,254,0.1); --tag-border: rgba(162,155,254,0.28); }
 
 .skill-cat-title {
   font-size: 1.5rem;
@@ -586,6 +609,7 @@ button { font-family: var(--font); }
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  color: var(--tag-color, var(--text));
 }
 .skill-cat-icon { font-size: 1.7rem; }
 
@@ -597,18 +621,19 @@ button { font-family: var(--font); }
 .skill-tags span {
   font-size: 1.2rem;
   font-family: var(--mono);
-  color: var(--text-muted);
-  background: rgba(0, 198, 255, 0.06);
-  border: 1px solid var(--border);
+  color: var(--tag-color, var(--text-muted));
+  background: var(--tag-bg, rgba(0,198,255,0.06));
+  border: 1px solid var(--tag-border, var(--border));
   padding: 0.45rem 1.1rem;
   border-radius: 100px;
-  transition: background var(--t), color var(--t), border-color var(--t);
+  transition: background var(--t), color var(--t), border-color var(--t), box-shadow var(--t);
   cursor: default;
 }
 .skill-tags span:hover {
-  background: var(--accent-dim);
-  color: var(--accent);
-  border-color: rgba(0, 198, 255, 0.3);
+  background: var(--card-accent-bg, var(--accent-dim));
+  color: var(--card-accent, var(--accent));
+  border-color: var(--card-accent, rgba(0,198,255,0.3));
+  box-shadow: 0 0 10px var(--card-accent-shadow, rgba(0,198,255,0.15));
 }
 
 /* ════════════════════════════════════════════
