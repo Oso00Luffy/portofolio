@@ -23,6 +23,7 @@
         <li><a href="#experience">Experience</a></li>
         <li><a href="#certifications">Certs</a></li>
         <li><a href="#projects">Projects</a></li>
+        <li><a href="./blog.html">Blog</a></li>
         <li><a href="image/Osama Jaradat CV.pdf" target="_blank" class="nav-cta">Resume ↗</a></li>
       </ul>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -35,6 +36,7 @@
       <a href="#experience">Experience</a>
       <a href="#certifications">Certifications</a>
       <a href="#projects">Projects</a>
+      <a href="./blog.html">Blog</a>
       <a href="image/Osama Jaradat CV.pdf" target="_blank">Resume ↗</a>
     </div>
   </nav>
@@ -382,6 +384,35 @@
     </div>
   </section>
 
+  <!-- ══ BLOG TEASER ══ -->
+  <section class="section blog-teaser-section" id="blog">
+    <div class="container">
+      <div class="section-label">06 / Blog</div>
+      <div class="blog-teaser-grid">
+        <div class="blog-teaser-text">
+          <h2 class="section-title" style="margin-bottom:2rem;">Field<br /><span class="gradient-text">Notes</span></h2>
+          <p class="blog-teaser-desc">Writeups, research, and hands-on breakdowns of pentesting concepts, vulnerabilities, and tools from the field.</p>
+          <a href="./blog.html" class="btn-primary blog-teaser-btn">View All Posts ↗</a>
+        </div>
+        <div class="blog-teaser-terminal">
+          <div class="terminal-window-sm">
+            <div class="terminal-top-sm">
+              <div class="term-dots-sm">
+                <span class="term-dot-sm r"></span>
+                <span class="term-dot-sm y"></span>
+                <span class="term-dot-sm g"></span>
+              </div>
+              <span class="term-title-sm">0xNeta@kali:~</span>
+            </div>
+            <div class="terminal-body-sm" id="teaserTermBody">
+              <!-- filled by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ══ FOOTER ══ -->
   <footer class="footer" id="contact">
     <div class="container">
@@ -455,6 +486,65 @@
       });
     }, { threshold: 0.4 });
     sections.forEach(s => sectionObserver.observe(s));
+
+    // ── Teaser terminal animation ──
+    (function () {
+      const teaserBody = document.getElementById('teaserTermBody');
+      if (!teaserBody) return;
+
+      const cmds = [
+        'nikto -h http://10.10.10.1 -output report.txt',
+        'hashcat -m 1000 hashes.ntds rockyou.txt --force',
+        'bloodhound-python -u user -p pass -d corp.local -c All',
+        'responder -I eth0 -wrf',
+        'crackmapexec smb 10.10.10.0/24 --shares',
+        'ffuf -w wordlist.txt -u http://target/FUZZ -mc 200',
+      ];
+      const pauses = [1000, 850, 1100, 750, 950, 900];
+      let idx = 0;
+
+      function createLine() {
+        const line = document.createElement('div');
+        line.className = 'term-line-sm';
+        line.innerHTML = '<span class="term-prompt-sm">$</span><span class="term-cmd-sm"></span><span class="term-cursor-sm"></span>';
+        teaserBody.appendChild(line);
+        teaserBody.scrollTop = teaserBody.scrollHeight;
+        return line;
+      }
+
+      function typeLine(line, text, done) {
+        const span = line.querySelector('.term-cmd-sm');
+        const cur  = line.querySelector('.term-cursor-sm');
+        let i = 0;
+        function tick() {
+          if (i <= text.length) { span.textContent = text.slice(0, i++); setTimeout(tick, 34 + Math.random() * 28); }
+          else { cur.style.display = 'none'; done(); }
+        }
+        tick();
+      }
+
+      function runNext() {
+        if (idx >= cmds.length) {
+          idx = 0;
+          setTimeout(() => { teaserBody.innerHTML = ''; runNext(); }, 2800);
+          return;
+        }
+        const line = createLine();
+        typeLine(line, cmds[idx], () => { const p = pauses[idx] || 800; idx++; setTimeout(runNext, p); });
+      }
+
+      // Only start when the section scrolls into view
+      const section = document.getElementById('blog');
+      let started = false;
+      const startObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !started) {
+          started = true;
+          const init = createLine();
+          setTimeout(() => { init.querySelector('.term-cursor-sm').style.display = 'none'; runNext(); }, 500);
+        }
+      }, { threshold: 0.2 });
+      if (section) startObserver.observe(section);
+    })();
   </script>
 </body>
 </html>

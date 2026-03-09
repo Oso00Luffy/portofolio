@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title id="docTitle">Post · Osama Jaradat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" crossorigin="anonymous" />
+  <style>
+    /* ═══════════════════════════════════════
+       POST PAGE LAYOUT
+    ═══════════════════════════════════════ */
+    .post-page {
+      min-height: 100vh;
+      padding: 13rem 0 10rem;
+    }
+
+    .post-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2.4rem;
+    }
+
+    /* Back link */
+    .post-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.3rem;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      margin-bottom: 4.4rem;
+      transition: color var(--t), gap var(--t);
+    }
+    .post-back:hover { color: var(--accent); gap: 14px; }
+
+    /* Post header */
+    .post-header { margin-bottom: 4.8rem; }
+
+    .post-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.6rem;
+    }
+
+    .post-read-time {
+      font-size: 1.2rem;
+      font-family: var(--mono);
+      color: var(--text-dim);
+    }
+
+    .post-title {
+      font-size: clamp(3rem, 5.5vw, 5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      margin-bottom: 2.2rem;
+      color: var(--text);
+    }
+
+    .post-excerpt-block {
+      font-size: 1.8rem;
+      color: var(--text-muted);
+      line-height: 1.78;
+      border-left: 3px solid var(--accent);
+      padding-left: 2rem;
+      margin-bottom: 0;
+    }
+
+    .post-divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, var(--accent), rgba(0,198,255,0.14), transparent);
+      margin: 4.4rem 0 5rem;
+    }
+
+    /* ═══════════════════════════════════════
+       ARTICLE TYPOGRAPHY
+    ═══════════════════════════════════════ */
+    .post-content {
+      font-size: 1.72rem;
+      line-height: 1.88;
+      color: var(--text-muted);
+    }
+
+    .post-content h1,
+    .post-content h2,
+    .post-content h3,
+    .post-content h4,
+    .post-content h5 {
+      color: var(--text);
+      font-weight: 700;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      margin: 4.4rem 0 1.6rem;
+    }
+    .post-content h1 { font-size: clamp(2.6rem, 4vw, 3.6rem); }
+    .post-content h2 {
+      font-size: clamp(2.1rem, 3vw, 3rem);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+    .post-content h3 { font-size: 2.3rem; color: var(--accent); }
+    .post-content h4 { font-size: 1.9rem; color: var(--text); }
+    .post-content h5 { font-size: 1.65rem; color: var(--text-muted); }
+
+    .post-content p { margin-bottom: 2rem; }
+
+    .post-content a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-decoration-color: rgba(0,198,255,0.3);
+      text-underline-offset: 3px;
+      transition: color var(--t), text-decoration-color var(--t);
+    }
+    .post-content a:hover {
+      color: #fff;
+      text-decoration-color: var(--accent);
+    }
+
+    /* ── Inline code ── */
+    .post-content :not(pre) > code {
+      font-family: var(--mono);
+      font-size: 0.87em;
+      background: rgba(0,198,255,0.08);
+      border: 1px solid rgba(0,198,255,0.16);
+      color: #7fdbff;
+      padding: 0.18em 0.55em;
+      border-radius: 5px;
+    }
+
+    /* ── Code blocks ── */
+    .post-content pre {
+      background: #0d1117 !important;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      margin: 3rem 0;
+      overflow-x: auto;
+      position: relative;
+    }
+    .post-content pre code {
+      font-size: 1.35rem !important;
+      background: transparent !important;
+      border: none !important;
+      padding: 2.2rem 2.4rem !important;
+      display: block !important;
+      line-height: 1.68 !important;
+    }
+
+    /* Language label */
+    .post-content pre[data-lang]::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 0.9rem;
+      right: 1.5rem;
+      font-size: 1.05rem;
+      font-family: var(--mono);
+      color: var(--text-dim);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    /* ── Blockquote ── */
+    .post-content blockquote {
+      border-left: 3px solid var(--purple);
+      padding: 1.6rem 2.6rem;
+      margin: 3rem 0;
+      background: var(--purple-dim);
+      border-radius: 0 12px 12px 0;
+    }
+    .post-content blockquote p {
+      margin: 0;
+      color: var(--text);
+      font-style: italic;
+      font-size: 1.65rem;
+    }
+
+    /* ── Lists ── */
+    .post-content ul,
+    .post-content ol {
+      padding-left: 2.8rem;
+      margin-bottom: 2rem;
+    }
+    .post-content li { margin-bottom: 0.7rem; line-height: 1.75; }
+    .post-content ul > li::marker { color: var(--accent); }
+    .post-content ol > li::marker {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.9em;
+    }
+
+    /* ── Images ── */
+    .post-content img {
+      max-width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin: 3rem auto;
+      display: block;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.48);
+    }
+
+    /* ── Tables ── */
+    .post-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 3rem 0;
+      font-size: 1.5rem;
+    }
+    .post-content th {
+      background: var(--card);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 1.2rem 1.6rem;
+      border: 1px solid var(--border);
+      text-align: left;
+    }
+    .post-content td {
+      padding: 1rem 1.6rem;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .post-content tr:hover td { background: var(--card); }
+
+    /* ── HR ── */
+    .post-content hr {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 4rem 0;
+    }
+
+    /* ── Strong / em ── */
+    .post-content strong { color: var(--text); font-weight: 600; }
+    .post-content em { color: var(--text); font-style: italic; }
+
+    /* ── YouTube embed ── */
+    .yt-embed {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 3rem 0;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.48);
+      background: #000;
+    }
+    .yt-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ── Callout boxes (:::tip / :::warning via custom syntax) ── */
+    .callout {
+      display: flex;
+      gap: 1.4rem;
+      padding: 1.8rem 2.2rem;
+      border-radius: 10px;
+      border: 1px solid;
+      margin: 3rem 0;
+      align-items: flex-start;
+    }
+    .callout-icon { font-size: 1.7rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .callout-body { font-size: 1.5rem; line-height: 1.7; }
+    .callout-body p { margin: 0; }
+    .callout.tip    { border-color: rgba(29,209,161,0.28); background: rgba(29,209,161,0.07); color: #26e0ad; }
+    .callout.warn   { border-color: rgba(255,159,67,0.28); background: rgba(255,159,67,0.07); color: #ffb066; }
+    .callout.danger { border-color: rgba(255,71,87,0.28);  background: rgba(255,71,87,0.07);  color: #ff6b7a; }
+    .callout.info   { border-color: rgba(0,198,255,0.28);  background: rgba(0,198,255,0.07);  color: #00d4ff; }
+
+    /* ── Not-found / loading ── */
+    .post-not-found {
+      text-align: center;
+      padding: 8rem 2rem;
+    }
+    .post-not-found h2 {
+      font-size: 3rem;
+      color: var(--text-muted);
+      margin-bottom: 1.4rem;
+    }
+    .post-not-found p {
+      font-size: 1.6rem;
+      color: var(--text-dim);
+      margin-bottom: 3.2rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .post-page { padding: 11rem 0 7rem; }
+      .post-content { font-size: 1.6rem; }
+      .post-content pre code { font-size: 1.2rem !important; padding: 1.8rem 1.6rem !important; }
+      .post-title { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="./index.html" class="nav-logo">OJ<span class="accent">.</span></a>
+      <ul class="nav-links">
+        <li><a href="./index.html#about">About</a></li>
+        <li><a href="./index.html#skills">Skills</a></li>
+        <li><a href="./index.html#experience">Experience</a></li>
+        <li><a href="./index.html#certifications">Certs</a></li>
+        <li><a href="./index.html#projects">Projects</a></li>
+        <li><a href="./blog.html" class="active">Blog</a></li>
+        <li><a href="image/Osama Jaradat CV.pdf" target="_blank" class="nav-cta">Resume ↗</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="./index.html#about">About</a>
+      <a href="./index.html#skills">Skills</a>
+      <a href="./index.html#experience">Experience</a>
+      <a href="./index.html#certifications">Certifications</a>
+      <a href="./index.html#projects">Projects</a>
+      <a href="./blog.html">Blog</a>
+      <a href="image/Osama Jaradat CV.pdf" target="_blank">Resume ↗</a>
+    </div>
+  </nav>
+
+  <!-- ══ POST ══ -->
+  <main class="post-page">
+    <div class="post-wrap" id="postWrap">
+      <!-- injected by JS -->
+    </div>
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span class="nav-logo">OJ<span class="accent">.</span></span>
+          <p>Cybersecurity Engineer based in Jordan, Amman.<br />Open to new opportunities.</p>
+        </div>
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/in/osama-jaradat" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/Oso00Luffy" target="_blank" rel="noopener">GitHub</a>
+          <a href="http://web.whatsapp.com/send?phone=+962777112843&text=Hello" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://www.facebook.com/Osama00luffy" target="_blank" rel="noopener">Facebook</a>
+          <a href="https://www.instagram.com/osama.143r/" target="_blank" rel="noopener">Instagram</a>
+          <a href="mailto:osama.jaradat@proton.me">Email</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Osama W. Jaradat. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ LIBRARIES ══ -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" crossorigin="anonymous"></script>
+
+  <script>
+    "use strict";
+
+    // ── Navbar ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // ── Hamburger ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+
+    // ── Helpers ──
+    const POSTS_KEY = 'oj_blog_posts';
+
+    function getPosts() {
+      try { return JSON.parse(localStorage.getItem(POSTS_KEY)) || []; }
+      catch (e) { return []; }
+    }
+
+    function escHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function readTime(text) {
+      const words = (text || '').split(/\s+/).filter(Boolean).length;
+      return Math.max(1, Math.round(words / 200)) + ' min read';
+    }
+
+    // ── YouTube auto-embed ──
+    // Any line that is purely a YouTube URL gets converted to an iframe embed.
+    function embedYouTube(md) {
+      return md.replace(
+        /^(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})(?:[?&\w=%-]*)?)[ \t]*$/gm,
+        function (_, _url, id) {
+          return (
+            '<div class="yt-embed">' +
+            '<iframe src="https://www.youtube.com/embed/' + id + '" ' +
+            'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+            'allowfullscreen loading="lazy" title="YouTube video"></iframe>' +
+            '</div>'
+          );
+        }
+      );
+    }
+
+    // ── Callout boxes ──
+    // Syntax:  :::tip Title\nBody text\n:::
+    // Types: tip, warn, warning, danger, info, note
+    function processCallouts(md) {
+      const icons = { tip: '💡', note: '📝', info: 'ℹ️', warn: '⚠️', warning: '⚠️', danger: '🚨' };
+      return md.replace(
+        /^:::(\w+)(?:\s+(.+))?\n([\s\S]*?)^:::/gm,
+        function (_, type, title, body) {
+          const t = type.toLowerCase();
+          const cls = t === 'warning' ? 'warn' : t;
+          const icon = icons[t] || 'ℹ️';
+          const heading = title ? '<strong>' + escHtml(title) + '</strong><br>' : '';
+          return (
+            '<div class="callout ' + cls + '">' +
+            '<span class="callout-icon">' + icon + '</span>' +
+            '<div class="callout-body">' + heading + escHtml(body.trim()) + '</div>' +
+            '</div>'
+          );
+        }
+      );
+    }
+
+    // ── Add data-lang to pre blocks so CSS can show the language label ──
+    function addLangLabels(html) {
+      return html.replace(
+        /<pre><code class="(?:hljs )?language-([a-zA-Z0-9_-]+)"/g,
+        function (_, lang) {
+          return '<pre data-lang="' + lang + '"><code class="language-' + lang + '"';
+        }
+      );
+    }
+
+    // ── Render a post ──
+    function renderPost(post) {
+      document.getElementById('docTitle').textContent = post.title + ' · Osama Jaradat';
+
+      var tagHtml =
+        '<span class="blog-tag ' + escHtml(post.tagColor || 'cyan') + '" ' +
+        'style="font-size:1.2rem;">' + escHtml(post.tag || '') + '</span>';
+
+      // Preprocess markdown
+      var md = (post.body || '*No content written yet.*');
+      md = embedYouTube(md);
+      md = processCallouts(md);
+
+      // Parse markdown → HTML
+      var contentHtml;
+      try {
+        const fn = (typeof marked.parse === 'function') ? marked.parse : marked;
+        contentHtml = fn(md, { breaks: true, gfm: true, html: true });
+      } catch (e) {
+        contentHtml = '<pre>' + escHtml(md) + '</pre>';
+      }
+
+      contentHtml = addLangLabels(contentHtml);
+
+      var wrap = document.getElementById('postWrap');
+      wrap.innerHTML =
+        '<a href="./blog.html" class="post-back">&#8592; All Posts</a>' +
+        '<header class="post-header">' +
+          '<div class="post-meta-row">' +
+            tagHtml +
+            '<span class="blog-date" style="font-size:1.25rem;font-family:var(--mono);color:var(--text-dim);">' +
+              escHtml(post.date || '') +
+            '</span>' +
+            '<span class="post-read-time">· ' + readTime(post.body) + '</span>' +
+          '</div>' +
+          '<h1 class="post-title">' + escHtml(post.title) + '</h1>' +
+          (post.excerpt
+            ? '<p class="post-excerpt-block">' + escHtml(post.excerpt) + '</p>'
+            : '') +
+        '</header>' +
+        '<hr class="post-divider">' +
+        '<article class="post-content" id="postArticle">' + contentHtml + '</article>';
+
+      // Syntax highlighting
+      wrap.querySelectorAll('pre code').forEach(function (el) {
+        hljs.highlightElement(el);
+      });
+    }
+
+    function showNotFound() {
+      document.getElementById('postWrap').innerHTML =
+        '<div class="post-not-found">' +
+          '<div class="section-label" style="margin-bottom:1.6rem;">// 404</div>' +
+          '<h2>Post not found</h2>' +
+          '<p>This post may have been removed or the link is invalid.</p>' +
+          '<a href="./blog.html" class="btn-primary" style="display:inline-flex;justify-content:center;">' +
+            '&#8592; Back to Blog' +
+          '</a>' +
+        '</div>';
+    }
+
+    // ── Load post from URL ──
+    var params = new URLSearchParams(window.location.search);
+    var postId  = params.get('id');
+
+    if (!postId) {
+      showNotFound();
+    } else {
+      var post = getPosts().find(function (p) { return p.id === postId; });
+      post ? renderPost(post) : showNotFound();
+    }
+  </script>
+
+</body>
+</html>

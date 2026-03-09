@@ -1118,6 +1118,119 @@ button { font-family: var(--font); }
 }
 
 /* ════════════════════════════════════════════
+   BLOG TEASER (index.html)
+════════════════════════════════════════════ */
+.blog-teaser-section { background: var(--bg); }
+
+.blog-teaser-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 7rem;
+  align-items: center;
+}
+
+.blog-teaser-desc {
+  font-size: 1.65rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 3.4rem;
+  max-width: 400px;
+}
+
+.blog-teaser-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Mini terminal widget */
+.terminal-window-sm {
+  background: #0d0d0d;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55),
+              0 0 0 1px rgba(255, 255, 255, 0.03),
+              0 0 50px rgba(0, 198, 255, 0.05);
+  overflow: hidden;
+  font-family: var(--mono);
+  width: 100%;
+}
+
+.terminal-top-sm {
+  background: #1c1c1e;
+  padding: 1.05rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  user-select: none;
+}
+
+.term-dots-sm {
+  display: flex;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.term-dot-sm {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+.term-dot-sm.r { background: #ff5f57; }
+.term-dot-sm.y { background: #febc2e; }
+.term-dot-sm.g { background: #28c840; }
+
+.term-title-sm {
+  font-size: 1.15rem;
+  color: #666;
+  margin: 0 auto;
+  letter-spacing: 0.04em;
+}
+
+.terminal-body-sm {
+  padding: 1.8rem 2rem;
+  min-height: 220px;
+  max-height: 260px;
+  overflow: hidden;
+  font-size: 1.3rem;
+  line-height: 1.85;
+}
+
+.term-line-sm {
+  display: flex;
+  gap: 0.8rem;
+  align-items: baseline;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.term-prompt-sm { color: var(--accent); user-select: none; }
+.term-cmd-sm    { color: #e6e6e6; }
+
+.term-cursor-sm {
+  display: inline-block;
+  width: 8px;
+  height: 1.15em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  animation: termBlink 1s step-end infinite;
+  margin-left: 1px;
+}
+
+@keyframes termBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@media (max-width: 900px) {
+  .blog-teaser-grid {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+  .blog-teaser-desc { max-width: 100%; }
+}
+
+/* ════════════════════════════════════════════
    SLIDESHOW legacy class support
 ════════════════════════════════════════════ */
 .slide-out-left {
