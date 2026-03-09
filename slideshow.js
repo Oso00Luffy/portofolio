@@ -2,13 +2,19 @@
 document.addEventListener('DOMContentLoaded', function() {
   let currentSlide = 0;
   const slideshowContainer = document.querySelector('#scc-slideshow');
+  const dotsContainer = document.querySelector('#scc-dots');
   
   if (slideshowContainer) {
     const slides = slideshowContainer.querySelectorAll('img');
+    const dots = dotsContainer ? dotsContainer.querySelectorAll('.dot') : [];
     const prevBtn = document.querySelector('#scc-prev');
     const nextBtn = document.querySelector('#scc-next');
     const totalSlides = slides.length;
     let isAnimating = false;
+
+    function syncDots(index) {
+      dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    }
     
     if (slides.length > 0) {
       // Show specific slide with animation
@@ -37,14 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove active class after animation
         setTimeout(() => {
           slides[prevIndex].classList.remove('active', 'slide-out-left', 'slide-out-right');
-          
-          // Show new slide with entrance animation
           slides[currentSlide].classList.add('active');
-          
-          // Reset animation lock
-          setTimeout(() => {
-            isAnimating = false;
-          }, 100);
+          syncDots(currentSlide);
+          setTimeout(() => { isAnimating = false; }, 100);
         }, 600);
       }
       
@@ -57,26 +58,23 @@ document.addEventListener('DOMContentLoaded', function() {
       function prevSlide() {
         showSlide(currentSlide - 1, 'prev');
       }
+
+      // Dot click navigation
+      dots.forEach((dot, i) => dot.addEventListener('click', () => showSlide(i)));
       
       // Add click events to navigation arrows
-      if (nextBtn) {
-        nextBtn.addEventListener('click', nextSlide);
-      }
-      
-      if (prevBtn) {
-        prevBtn.addEventListener('click', prevSlide);
-      }
+      if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+      if (prevBtn) prevBtn.addEventListener('click', prevSlide);
       
       // Auto-play slideshow every 4 seconds
       let autoSlide = setInterval(nextSlide, 4000);
       
       // Pause auto-play on hover
-      const outerContainer = document.querySelector('.new_pro1 .outer_iframe');
+      const outerContainer = document.querySelector('.project-slideshow-wrap');
       if (outerContainer) {
         outerContainer.addEventListener('mouseenter', function() {
           clearInterval(autoSlide);
         });
-        
         outerContainer.addEventListener('mouseleave', function() {
           autoSlide = setInterval(nextSlide, 4000);
         });
