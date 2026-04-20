@@ -409,13 +409,14 @@ button { font-family: var(--font); }
 }
 
 .hero-scroll-hint {
-  position: absolute;
-  bottom: 2.8rem;
-  right: 4rem;
+  position: fixed;
+  bottom: max(2.4rem, calc(env(safe-area-inset-bottom) + 1.4rem));
+  right: clamp(1.6rem, 4vw, 4rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  z-index: 2;
   font-size: 1.05rem;
   font-family: var(--mono);
   color: var(--text-dim);
@@ -423,6 +424,14 @@ button { font-family: var(--font); }
   text-transform: uppercase;
   writing-mode: vertical-rl;
   user-select: none;
+  pointer-events: none;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+.hero-scroll-hint.is-hidden {
+  opacity: 0;
+  transform: translateY(10px);
 }
 .scroll-line {
   width: 1px;
@@ -1107,6 +1116,12 @@ button { font-family: var(--font); }
   .edu-header {
     flex-direction: column;
     gap: 0.4rem;
+  }
+}
+
+@media (max-height: 740px) {
+  .hero-scroll-hint {
+    bottom: max(1.2rem, calc(env(safe-area-inset-bottom) + 0.8rem));
   }
 }
 
