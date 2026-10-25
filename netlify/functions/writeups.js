@@ -78,6 +78,9 @@ exports.handler = async (event) => {
     if (!settings.adminKey || body.password !== settings.adminKey) {
       return json(401, { error: 'Invalid publishing credentials.' });
     }
+    if (body.action === 'auth') {
+      return json(200, { ok: true });
+    }
     if (!Array.isArray(body.posts)) {
       return json(400, { error: 'Posts must be an array.' });
     }

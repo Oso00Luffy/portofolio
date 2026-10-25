@@ -595,7 +595,7 @@
             <span class="term-dot y"></span>
             <span class="term-dot g"></span>
           </div>
-          <span class="term-title">0xNeta@kali:~</span>
+          <span class="term-title">osama@kali:~</span>
         </div>
         <div class="terminal-body" id="termBody">
           <!-- filled by JS -->
@@ -851,9 +851,10 @@ Paste a YouTube URL on its own line to embed it."></textarea>
     (function () {
       const POSTS_KEY    = 'oj_blog_posts';
       const ADMIN_SESSION_KEY = 'oj_admin_unlocked';
-      const ADMIN_ANSWER = '0xNeta';
       const WRITEUPS_API = '/.netlify/functions/writeups';
-      let adminUnlocked  = localStorage.getItem(ADMIN_SESSION_KEY) === '1';
+      const ADMIN_PASSWORD_KEY = 'oj_admin_password';
+      let adminPassword = sessionStorage.getItem(ADMIN_PASSWORD_KEY) || '';
+      let adminUnlocked  = Boolean(adminPassword);
       let editingPostId = null;
       let draftAttachments = [];
       let pendingEditId = new URLSearchParams(window.location.search).get('edit');
@@ -870,7 +871,7 @@ Paste a YouTube URL on its own line to embed it."></textarea>
         const response = await fetch(WRITEUPS_API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ posts: posts, password: ADMIN_ANSWER, message: message })
+          body: JSON.stringify({ posts: posts, password: adminPassword, message: message })
         });
         const result = await response.json().catch(function () { return {}; });
         if (!response.ok) throw new Error(result.error || 'Permanent publishing failed.');
@@ -1134,6 +1135,8 @@ Paste a YouTube URL on its own line to embed it."></textarea>
       document.getElementById('adminClose2').addEventListener('click', closeAdmin);
       document.getElementById('adminLogout').addEventListener('click', function () {
         adminUnlocked = false;
+        adminPassword = '';
+        sessionStorage.removeItem(ADMIN_PASSWORD_KEY);
         localStorage.removeItem(ADMIN_SESSION_KEY);
         closeAdmin();
         renderDynamicPosts();
@@ -1146,9 +1149,16 @@ Paste a YouTube URL on its own line to embed it."></textarea>
       });
 
       document.getElementById('adminVerify').addEventListener('click', function () {
-        if (answerInput.value.trim().toLowerCase() === ADMIN_ANSWER.toLowerCase()) {
+        var password = answerInput.value.trim();
+        fetch(WRITEUPS_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'auth', password: password })
+        }).then(function (response) {
+          if (!response.ok) throw new Error('Invalid publishing credentials.');
+          adminPassword = password;
+          sessionStorage.setItem(ADMIN_PASSWORD_KEY, password);
           adminUnlocked = true;
-          localStorage.setItem(ADMIN_SESSION_KEY, '1');
           errorEl.classList.remove('visible');
           if (pendingEditId) {
             var requestedPost = getPosts().find(function (item) { return item.id === pendingEditId; });
@@ -1158,11 +1168,11 @@ Paste a YouTube URL on its own line to embed it."></textarea>
           } else {
             openComposer();
           }
-        } else {
+        }).catch(function () {
           errorEl.classList.add('visible');
           answerInput.value = '';
           answerInput.focus();
-        }
+        });
       });
 
       answerInput.addEventListener('keydown', function (e) {

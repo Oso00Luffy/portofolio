@@ -600,7 +600,7 @@
       const response = await fetch(WRITEUPS_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ posts: posts, password: '0xNeta', message: message })
+        body: JSON.stringify({ posts: posts, password: sessionStorage.getItem('oj_admin_password') || '', message: message })
       });
       const result = await response.json().catch(function () { return {}; });
       if (!response.ok) throw new Error(result.error || 'Permanent publishing failed.');
@@ -738,7 +738,7 @@
       wrap.innerHTML =
         '<div class="post-actions">' +
           '<a href="./blog.html" class="post-back">&#8592; All Posts</a>' +
-          (localStorage.getItem('oj_admin_unlocked') === '1'
+          (sessionStorage.getItem('oj_admin_password')
             ? '<button type="button" class="post-edit-link" id="editPostButton">✎ Edit writeup</button>'
             : '<a href="./blog.html" class="post-edit-link">🔐 Admin login</a>') +
         '</div>' +
