@@ -294,7 +294,10 @@
       margin: 3rem auto;
       display: block;
       box-shadow: 0 16px 48px rgba(0,0,0,0.48);
+      cursor: zoom-in;
+      transition: transform .25s ease, border-color .25s ease;
     }
+    .post-content img:hover { border-color: var(--border-glow); transform: translateY(-2px); }
     .missing-attachment {
       margin: 2rem 0;
       padding: 1.2rem 1.5rem;
@@ -304,6 +307,65 @@
       font-family: var(--mono);
       font-size: 1.25rem;
       background: rgba(255,159,67,.06);
+    }
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: grid;
+      place-items: center;
+      padding: 3rem;
+      background: rgba(3, 5, 8, .92);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .image-lightbox.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .image-lightbox img {
+      max-width: min(94vw, 1500px);
+      max-height: 88vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      margin: 0;
+      border: 1px solid rgba(0,198,255,.32);
+      border-radius: 12px;
+      box-shadow: 0 28px 100px rgba(0,0,0,.72);
+      cursor: zoom-out;
+      transform: scale(.96);
+      transition: transform .25s ease;
+    }
+    .image-lightbox.open img { transform: scale(1); }
+    .image-lightbox-close {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      width: 4rem;
+      height: 4rem;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 50%;
+      background: rgba(10,10,15,.75);
+      color: var(--text);
+      font-size: 2.4rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .image-lightbox-close:hover { color: var(--accent); border-color: var(--accent); }
+    .image-lightbox-caption {
+      position: fixed;
+      left: 50%;
+      bottom: 2rem;
+      transform: translateX(-50%);
+      max-width: 80vw;
+      color: var(--text-muted);
+      font: 1.2rem var(--mono);
+      text-align: center;
     }
 
     /* ── Tables ── */
@@ -474,6 +536,12 @@
     </div>
   </main>
 
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
+    <button class="image-lightbox-close" id="imageLightboxClose" type="button" aria-label="Close enlarged image">×</button>
+    <img id="imageLightboxImage" alt="">
+    <div class="image-lightbox-caption" id="imageLightboxCaption"></div>
+  </div>
+
   <!-- ══ FOOTER ══ -->
   <footer class="footer">
     <div class="container">
@@ -520,10 +588,22 @@
 
     // ── Helpers ──
     const POSTS_KEY = 'oj_blog_posts';
+    const WRITEUPS_API = '/.netlify/functions/writeups';
 
     function getPosts() {
       try { return JSON.parse(localStorage.getItem(POSTS_KEY)) || []; }
       catch (e) { return []; }
+    }
+
+    async function persistPosts(posts, message) {
+      localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+      const response = await fetch(WRITEUPS_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ posts: posts, password: '0xNeta', message: message })
+      });
+      const result = await response.json().catch(function () { return {}; });
+      if (!response.ok) throw new Error(result.error || 'Permanent publishing failed.');
     }
 
     function escHtml(str) {
@@ -706,6 +786,32 @@
         hljs.highlightElement(el);
       });
 
+      var lightbox = document.getElementById('imageLightbox');
+      var lightboxImage = document.getElementById('imageLightboxImage');
+      var lightboxCaption = document.getElementById('imageLightboxCaption');
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+      wrap.querySelectorAll('.post-content img').forEach(function (image) {
+        image.addEventListener('click', function () {
+          lightboxImage.src = image.src;
+          lightboxImage.alt = image.alt || 'Enlarged writeup image';
+          lightboxCaption.textContent = image.alt || '';
+          lightbox.classList.add('open');
+          lightbox.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+      document.getElementById('imageLightboxClose').addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', function (event) {
+        if (event.target === lightbox || event.target === lightboxImage) closeLightbox();
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeLightbox();
+      });
+
       var editButton = document.getElementById('editPostButton');
       if (!editButton) return;
       var editor = document.getElementById('postInlineEditor');
@@ -774,9 +880,15 @@
           return;
         }
         posts[index] = updated;
-        localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
-        document.getElementById('inlinePostStatus').textContent = 'Saved. Refreshing article...';
-        window.setTimeout(function () { window.location.reload(); }, 350);
+        document.getElementById('inlinePostStatus').textContent = 'Publishing permanently...';
+        persistPosts(posts, 'Edit writeup: ' + updated.title)
+          .then(function () {
+            document.getElementById('inlinePostStatus').textContent = 'Saved permanently. Refreshing article...';
+            window.setTimeout(function () { window.location.reload(); }, 350);
+          })
+          .catch(function (error) {
+            document.getElementById('inlinePostStatus').textContent = error.message;
+          });
       });
     }
 
@@ -796,12 +908,33 @@
     var params = new URLSearchParams(window.location.search);
     var postId  = params.get('id');
 
-    if (!postId) {
-      showNotFound();
-    } else {
+    async function loadPost() {
+      if (!postId) {
+        showNotFound();
+        return;
+      }
       var post = getPosts().find(function (p) { return p.id === postId; });
+      try {
+        var response = await fetch(WRITEUPS_API, { cache: 'no-store' });
+        if (response.ok) {
+          var result = await response.json();
+          if (Array.isArray(result.posts)) {
+            result.posts.forEach(function (remotePost) {
+              var localIndex = getPosts().findIndex(function (localPost) { return localPost.id === remotePost.id; });
+              var merged = getPosts();
+              if (localIndex >= 0) merged[localIndex] = remotePost;
+              else merged.push(remotePost);
+              localStorage.setItem(POSTS_KEY, JSON.stringify(merged));
+            });
+            post = result.posts.find(function (item) { return item.id === postId; }) || post;
+          }
+        }
+      } catch (error) {
+        console.warn('Permanent writeups are unavailable; using local copy.', error);
+      }
       post ? renderPost(post) : showNotFound();
     }
+    loadPost();
   </script>
 
 </body>

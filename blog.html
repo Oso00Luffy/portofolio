@@ -852,6 +852,7 @@ Paste a YouTube URL on its own line to embed it."></textarea>
       const POSTS_KEY    = 'oj_blog_posts';
       const ADMIN_SESSION_KEY = 'oj_admin_unlocked';
       const ADMIN_ANSWER = '0xNeta';
+      const WRITEUPS_API = '/.netlify/functions/writeups';
       let adminUnlocked  = localStorage.getItem(ADMIN_SESSION_KEY) === '1';
       let editingPostId = null;
       let draftAttachments = [];
@@ -863,6 +864,35 @@ Paste a YouTube URL on its own line to embed it."></textarea>
       }
       function savePosts(posts) {
         localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+      }
+      async function publishPosts(posts, message) {
+        savePosts(posts);
+        const response = await fetch(WRITEUPS_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ posts: posts, password: ADMIN_ANSWER, message: message })
+        });
+        const result = await response.json().catch(function () { return {}; });
+        if (!response.ok) throw new Error(result.error || 'Permanent publishing failed.');
+        return result;
+      }
+      async function loadPermanentPosts() {
+        try {
+          const response = await fetch(WRITEUPS_API, { cache: 'no-store' });
+          if (!response.ok) return;
+          const result = await response.json();
+          if (!Array.isArray(result.posts)) return;
+          const merged = getPosts().slice();
+          result.posts.forEach(function (remotePost) {
+            var index = merged.findIndex(function (localPost) { return localPost.id === remotePost.id; });
+            if (index >= 0) merged[index] = remotePost;
+            else merged.push(remotePost);
+          });
+          savePosts(merged);
+          renderDynamicPosts();
+        } catch (error) {
+          console.warn('Permanent writeups are unavailable; using local drafts.', error);
+        }
       }
       function openComposer() {
         step1.style.display = 'none';
@@ -944,8 +974,10 @@ Paste a YouTube URL on its own line to embed it."></textarea>
           div.querySelector('.bc-delete').addEventListener('click', function (e) {
             e.stopPropagation();
             if (confirm('Delete "' + post.title + '"?')) {
-              savePosts(getPosts().filter(function (p) { return p.id !== post.id; }));
-              renderDynamicPosts();
+              var remaining = getPosts().filter(function (p) { return p.id !== post.id; });
+              publishPosts(remaining, 'Delete writeup: ' + post.title)
+                .then(renderDynamicPosts)
+                .catch(function (error) { window.alert(error.message); });
             }
           });
         }
@@ -1141,7 +1173,7 @@ Paste a YouTube URL on its own line to embed it."></textarea>
         fileInput.value = toFilename(titleInput.value);
       });
 
-      document.getElementById('postForm').addEventListener('submit', function (e) {
+      document.getElementById('postForm').addEventListener('submit', async function (e) {
         e.preventDefault();
         var parts = tagSelect.value.split('|');
         var post = {
@@ -1160,8 +1192,13 @@ Paste a YouTube URL on its own line to embed it."></textarea>
         var existingIndex = posts.findIndex(function (item) { return item.id === post.id; });
         if (existingIndex >= 0) posts[existingIndex] = post;
         else posts.push(post);
-        savePosts(posts);
-        renderDynamicPosts();
+        try {
+          await publishPosts(posts, (editingPostId ? 'Edit writeup: ' : 'Publish writeup: ') + post.title);
+          renderDynamicPosts();
+        } catch (error) {
+          window.alert(error.message);
+          return;
+        }
         closeAdmin();
         editingPostId = null;
         draftAttachments = [];
@@ -1778,6 +1815,7 @@ Always try default credentials first: \`admin:admin\`, \`admin:password\`, \`roo
       // Load saved posts on page start
       seedDefaultPosts();
       renderDynamicPosts();
+      loadPermanentPosts();
       if (pendingEditId) {
         if (adminUnlocked) {
           editPost(pendingEditId);
