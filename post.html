@@ -37,6 +37,95 @@
       transition: color var(--t), gap var(--t);
     }
     .post-back:hover { color: var(--accent); gap: 14px; }
+    .post-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 4.4rem;
+    }
+    .post-actions .post-back { margin-bottom: 0; }
+    .post-edit-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      padding: .8rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font: 1.15rem var(--mono);
+      transition: color var(--t), border-color var(--t), background var(--t);
+    }
+    .post-edit-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .post-inline-editor {
+      display: none;
+      margin-top: 2.5rem;
+      padding: 2.2rem;
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      background: rgba(17, 17, 32, .72);
+    }
+    .post-inline-editor.open { display: block; }
+    .post-inline-editor label {
+      display: block;
+      color: var(--text-muted);
+      font: 1.05rem var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin: 0 0 .6rem;
+    }
+    .post-inline-input,
+    .post-inline-textarea {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 1.5rem;
+      padding: 1.1rem 1.3rem;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      font: 1.45rem var(--font);
+    }
+    .post-inline-input:focus,
+    .post-inline-textarea:focus { border-color: var(--accent); }
+    .post-inline-textarea {
+      min-height: 420px;
+      resize: vertical;
+      font: 1.3rem/1.7 var(--mono);
+    }
+    .post-inline-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .post-media-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin: .3rem 0 1rem;
+    }
+    .post-media-tool {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      border-radius: 7px;
+      padding: .7rem 1rem;
+      cursor: pointer;
+      font: 1.05rem var(--mono);
+    }
+    .post-media-tool:hover { color: var(--accent); border-color: var(--accent); }
+    .post-inline-status { color: var(--text-dim); font: 1.05rem var(--mono); }
+    .post-admin-note {
+      color: var(--text-dim);
+      font: 1.05rem var(--mono);
+      margin-left: auto;
+    }
 
     /* Post header */
     .post-header { margin-bottom: 4.8rem; }
@@ -281,6 +370,38 @@
     .callout.danger { border-color: rgba(255,71,87,0.28);  background: rgba(255,71,87,0.07);  color: #ff6b7a; }
     .callout.info   { border-color: rgba(0,198,255,0.28);  background: rgba(0,198,255,0.07);  color: #00d4ff; }
 
+    .hidden-answer {
+      margin: 3rem 0;
+      border: 1px solid rgba(127, 90, 240, .42);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(127, 90, 240, .14), rgba(0, 198, 255, .05));
+      overflow: hidden;
+    }
+    .hidden-answer summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 1.5rem 1.8rem;
+      color: #c4b5fd;
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      user-select: none;
+    }
+    .hidden-answer summary::-webkit-details-marker { display: none; }
+    .hidden-answer summary::after {
+      content: '＋';
+      float: right;
+      font-size: 1.7rem;
+      transition: transform .2s ease;
+    }
+    .hidden-answer[open] summary::after { content: '−'; }
+    .hidden-answer-body {
+      padding: 1.5rem 1.8rem 1.8rem;
+      border-top: 1px solid rgba(127, 90, 240, .2);
+      color: var(--text);
+      white-space: pre-wrap;
+      font-size: 1.55rem;
+    }
+
     /* ── Not-found / loading ── */
     .post-not-found {
       text-align: center;
@@ -446,6 +567,35 @@
       );
     }
 
+    function processAnswers(md) {
+      return md.replace(
+        /^:::answer(?:\s+(.+))?\n([\s\S]*?)^:::/gmi,
+        function (_, title, body) {
+          return '<details class="hidden-answer">' +
+            '<summary>🔒 ' + escHtml(title || 'Reveal answer') + '</summary>' +
+            '<div class="hidden-answer-body">' + escHtml(body.trim()) + '</div>' +
+            '</details>';
+        }
+      );
+    }
+
+    function resolveAttachments(md, post) {
+      const attachments = Array.isArray(post.attachments) ? post.attachments : [];
+      md = md.replace(/\{\{media:([^}]+)\}\}/g, function (_, id) {
+        const attachment = attachments.find(function (item) { return item.id === id; });
+        if (!attachment) return '';
+        const source = attachment.data.replace(/"/g, '&quot;');
+        if (attachment.type === 'video') {
+          return '<video controls preload="metadata" style="max-width:100%;border-radius:12px;margin:2rem 0"><source src="' + source + '"></video>';
+        }
+        return '<audio controls preload="metadata" style="width:100%;margin:2rem 0"><source src="' + source + '"></audio>';
+      });
+      return md.replace(/\((attachment:[^)]+)\)/g, function (_, id) {
+        const attachment = attachments.find(function (item) { return item.id === id; });
+        return attachment ? '(' + attachment.data + ')' : '(#' + id + ')';
+      });
+    }
+
     // ── Add data-lang to pre blocks so CSS can show the language label ──
     function addLangLabels(html) {
       return html.replace(
@@ -466,7 +616,9 @@
 
       // Preprocess markdown
       var md = (post.body || '*No content written yet.*');
+      md = resolveAttachments(md, post);
       md = embedYouTube(md);
+      md = processAnswers(md);
       md = processCallouts(md);
 
       // Parse markdown → HTML
@@ -482,7 +634,12 @@
 
       var wrap = document.getElementById('postWrap');
       wrap.innerHTML =
-        '<a href="./blog.html" class="post-back">&#8592; All Posts</a>' +
+        '<div class="post-actions">' +
+          '<a href="./blog.html" class="post-back">&#8592; All Posts</a>' +
+          (localStorage.getItem('oj_admin_unlocked') === '1'
+            ? '<button type="button" class="post-edit-link" id="editPostButton">✎ Edit writeup</button>'
+            : '<a href="./blog.html" class="post-edit-link">🔐 Admin login</a>') +
+        '</div>' +
         '<header class="post-header">' +
           '<div class="post-meta-row">' +
             tagHtml +
@@ -496,12 +653,108 @@
             ? '<p class="post-excerpt-block">' + escHtml(post.excerpt) + '</p>'
             : '') +
         '</header>' +
+        '<section class="post-inline-editor" id="postInlineEditor" aria-label="Edit writeup">' +
+          '<label for="inlinePostTitle">Title</label>' +
+          '<input class="post-inline-input" id="inlinePostTitle" value="' + escHtml(post.title) + '">' +
+          '<label for="inlinePostExcerpt">Excerpt</label>' +
+          '<textarea class="post-inline-input" id="inlinePostExcerpt">' + escHtml(post.excerpt || '') + '</textarea>' +
+          '<label for="inlinePostBody">Writeup Markdown</label>' +
+          '<div class="post-media-tools">' +
+            '<button type="button" class="post-media-tool" id="inlineUploadImage">Upload image</button>' +
+            '<button type="button" class="post-media-tool" id="inlineUploadVideo">Upload video</button>' +
+            '<button type="button" class="post-media-tool" id="inlineUploadAudio">Upload sound</button>' +
+            '<button type="button" class="post-media-tool" id="inlineAddAnswer">Hide answer</button>' +
+            '<input type="file" id="inlineImageFile" accept="image/*" hidden>' +
+            '<input type="file" id="inlineVideoFile" accept="video/*" hidden>' +
+            '<input type="file" id="inlineAudioFile" accept="audio/*" hidden>' +
+          '</div>' +
+          '<textarea class="post-inline-textarea" id="inlinePostBody">' + escHtml(post.body || '') + '</textarea>' +
+          '<div class="post-inline-actions">' +
+            '<button type="button" class="btn-primary" id="saveInlinePost">Save changes ↗</button>' +
+            '<button type="button" class="btn-ghost" id="cancelInlinePost">Cancel</button>' +
+            '<span class="post-inline-status" id="inlinePostStatus"></span>' +
+            '<span class="post-admin-note">Admin session active</span>' +
+          '</div>' +
+        '</section>' +
         '<hr class="post-divider">' +
         '<article class="post-content" id="postArticle">' + contentHtml + '</article>';
 
       // Syntax highlighting
       wrap.querySelectorAll('pre code').forEach(function (el) {
         hljs.highlightElement(el);
+      });
+
+      var editButton = document.getElementById('editPostButton');
+      if (!editButton) return;
+      var editor = document.getElementById('postInlineEditor');
+      editButton.addEventListener('click', function () {
+        editor.classList.add('open');
+        editButton.setAttribute('aria-expanded', 'true');
+        document.getElementById('inlinePostTitle').focus();
+        editor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      document.getElementById('cancelInlinePost').addEventListener('click', function () {
+        editor.classList.remove('open');
+        editButton.setAttribute('aria-expanded', 'false');
+      });
+      var inlineAttachments = Array.isArray(post.attachments) ? post.attachments.slice() : [];
+      function insertInlineMedia(token) {
+        var body = document.getElementById('inlinePostBody');
+        var start = body.selectionStart;
+        body.value = body.value.slice(0, start) + '\n\n' + token + '\n\n' + body.value.slice(body.selectionEnd);
+        body.focus();
+      }
+      function bindInlineUpload(buttonId, inputId, kind, acceptLabel) {
+        document.getElementById(buttonId).addEventListener('click', function () {
+          document.getElementById(inputId).click();
+        });
+        document.getElementById(inputId).addEventListener('change', function () {
+          var file = this.files && this.files[0];
+          if (!file) return;
+          if (file.size > 5000000) {
+            window.alert('Please choose a file smaller than 5 MB.');
+            this.value = '';
+            return;
+          }
+          var reader = new FileReader();
+          reader.onload = function () {
+            var id = 'attachment-' + Date.now();
+            inlineAttachments.push({ id: id, name: file.name, type: kind, data: reader.result });
+            insertInlineMedia(kind === 'image' ? '![' + file.name + '](attachment:' + id + ')' : '{{media:' + id + '}}');
+          };
+          reader.onerror = function () { window.alert(acceptLabel + ' could not be read.'); };
+          reader.readAsDataURL(file);
+          this.value = '';
+        });
+      }
+      bindInlineUpload('inlineUploadImage', 'inlineImageFile', 'image', 'Image');
+      bindInlineUpload('inlineUploadVideo', 'inlineVideoFile', 'video', 'Video');
+      bindInlineUpload('inlineUploadAudio', 'inlineAudioFile', 'audio', 'Audio');
+      document.getElementById('inlineAddAnswer').addEventListener('click', function () {
+        var body = document.getElementById('inlinePostBody');
+        var start = body.selectionStart;
+        var token = '\n\n:::answer Reveal answer\nPut the answer, flag, command output, or solution here.\n:::\n\n';
+        body.value = body.value.slice(0, start) + token + body.value.slice(body.selectionEnd);
+        body.focus();
+      });
+      document.getElementById('saveInlinePost').addEventListener('click', function () {
+        var posts = getPosts();
+        var index = posts.findIndex(function (item) { return item.id === post.id; });
+        if (index < 0) return;
+        var updated = Object.assign({}, posts[index], {
+          title: document.getElementById('inlinePostTitle').value.trim(),
+          excerpt: document.getElementById('inlinePostExcerpt').value.trim(),
+          body: document.getElementById('inlinePostBody').value.trim(),
+          attachments: inlineAttachments
+        });
+        if (!updated.title || !updated.body) {
+          document.getElementById('inlinePostStatus').textContent = 'Title and body are required.';
+          return;
+        }
+        posts[index] = updated;
+        localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+        document.getElementById('inlinePostStatus').textContent = 'Saved. Refreshing article...';
+        window.setTimeout(function () { window.location.reload(); }, 350);
       });
     }
 

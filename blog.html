@@ -362,6 +362,22 @@
       padding: 0.4rem 1.2rem;
       border-radius: 100px;
     }
+    .admin-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+    }
+    .admin-logout {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 7px;
+      padding: .65rem .9rem;
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      cursor: pointer;
+    }
+    .admin-logout:hover { color: #ffb066; border-color: #ffb066; }
     .admin-close {
       background: none;
       border: 1px solid var(--border);
@@ -414,7 +430,66 @@
     .admin-select { cursor: pointer; }
     .admin-textarea { min-height: 96px; resize: vertical; font-family: var(--font); line-height: 1.6; }
     .admin-body-area { min-height: 220px; resize: vertical; font-family: var(--mono); font-size: 1.25rem; line-height: 1.7; }
-    .admin-modal { max-width: 560px; }
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin: -.4rem 0 1.2rem;
+    }
+    .editor-tool {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 7px;
+      padding: .7rem 1rem;
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: color var(--t), border-color var(--t), background var(--t);
+    }
+    .editor-tool:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+    .editor-help {
+      flex-basis: 100%;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+    .admin-modal { max-width: 760px; }
+    .editor-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+      gap: 1.4rem;
+      align-items: start;
+    }
+    .editor-pane-label {
+      display: block;
+      color: var(--text-dim);
+      font: 1rem var(--mono);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin: .2rem 0 .7rem;
+    }
+    .editor-preview {
+      min-height: 220px;
+      max-height: 390px;
+      overflow: auto;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #0d0d15;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      line-height: 1.65;
+    }
+    .editor-preview h2, .editor-preview h3 { color: var(--text); margin: 0 0 .8rem; }
+    .editor-preview h2 { font-size: 1.8rem; }
+    .editor-preview h3 { font-size: 1.5rem; color: var(--accent); }
+    .editor-preview img { max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 7px; margin: .8rem 0; }
+    .editor-preview code { color: #7fdbff; font-family: var(--mono); }
+    .editor-preview .preview-callout { padding: 1rem; margin: .8rem 0; border-left: 3px solid var(--accent); background: var(--accent-dim); }
+    .editor-preview-empty { color: var(--text-dim); font-family: var(--mono); }
+    .editor-status { color: var(--text-dim); font: 1rem var(--mono); margin: .7rem 0 0; }
     .admin-error {
       font-size: 1.25rem;
       color: #ff6b7a;
@@ -438,6 +513,16 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.4rem;
+    }
+    .card-actions { display: inline-flex; gap: .8rem; margin-left: auto; }
+    .bc-edit {
+      background: none; border: 1px solid var(--border); color: var(--text-muted);
+      cursor: pointer; border-radius: 4px; padding: .25rem .55rem; font: 1rem var(--mono);
+    }
+    .bc-edit:hover { color: var(--accent); border-color: var(--accent); }
+    @media (max-width: 680px) {
+      .editor-layout { grid-template-columns: 1fr; }
+      .editor-preview { max-height: 240px; }
     }
     .bc-delete {
       margin-left: auto;
@@ -576,7 +661,10 @@
       <div id="adminStep2" style="display:none">
         <div class="admin-modal-header">
           <span class="admin-badge">✏️ New Post</span>
-          <button class="admin-close" id="adminClose2" aria-label="Close">✕</button>
+          <div class="admin-modal-actions">
+            <button class="admin-logout" id="adminLogout" type="button">Lock</button>
+            <button class="admin-close" id="adminClose2" aria-label="Close">✕</button>
+          </div>
         </div>
         <form id="postForm" class="post-form" novalidate>
           <div class="form-row">
@@ -613,7 +701,23 @@
           </div>
           <div class="form-row">
             <label for="postBody">Body <span style="opacity:.5;font-size:.88em;font-weight:400;">(Markdown &middot; YouTube links auto-embed)</span></label>
-            <textarea id="postBody" class="admin-input admin-body-area" placeholder="## Introduction
+            <div class="editor-toolbar" aria-label="Writeup tools">
+              <button class="editor-tool" id="addImageUrl" type="button">Add image URL</button>
+              <button class="editor-tool" id="addImageFile" type="button">Upload image</button>
+              <button class="editor-tool" id="addVideoFile" type="button">Upload video</button>
+              <button class="editor-tool" id="addAudioFile" type="button">Upload sound</button>
+              <button class="editor-tool" id="addHint" type="button">Add hint</button>
+              <button class="editor-tool" id="addWarning" type="button">Add warning</button>
+              <button class="editor-tool" id="addAnswer" type="button">Hide answer</button>
+              <input id="postImageFile" type="file" accept="image/*" hidden />
+              <input id="postVideoFile" type="file" accept="video/*" hidden />
+              <input id="postAudioFile" type="file" accept="audio/*" hidden />
+              <span class="editor-help">Images can be uploaded from your computer or added by URL. Hints and warnings appear as highlighted callouts.</span>
+            </div>
+            <div class="editor-layout">
+              <div>
+                <span class="editor-pane-label">Markdown source</span>
+                <textarea id="postBody" class="admin-input admin-body-area" placeholder="## Introduction
 
 Write your full writeup here...
 
@@ -622,6 +726,13 @@ nmap -sV target
 ```
 
 Paste a YouTube URL on its own line to embed it."></textarea>
+              </div>
+              <div>
+                <span class="editor-pane-label">Live preview</span>
+                <div id="editorPreview" class="editor-preview"><span class="editor-preview-empty">Your writeup preview will appear here.</span></div>
+                <div id="editorStatus" class="editor-status">New writeup · autosaved locally while editing</div>
+              </div>
+            </div>
           </div>
           <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:1.4rem;margin-top:0.4rem;">Publish Post ↗</button>
         </form>
@@ -739,8 +850,12 @@ Paste a YouTube URL on its own line to embed it."></textarea>
     // ══════════════════════════════════════════
     (function () {
       const POSTS_KEY    = 'oj_blog_posts';
+      const ADMIN_SESSION_KEY = 'oj_admin_unlocked';
       const ADMIN_ANSWER = '0xNeta';
-      let adminUnlocked  = false;
+      let adminUnlocked  = localStorage.getItem(ADMIN_SESSION_KEY) === '1';
+      let editingPostId = null;
+      let draftAttachments = [];
+      let pendingEditId = new URLSearchParams(window.location.search).get('edit');
 
       function getPosts() {
         try { return JSON.parse(localStorage.getItem(POSTS_KEY)) || []; }
@@ -748,6 +863,42 @@ Paste a YouTube URL on its own line to embed it."></textarea>
       }
       function savePosts(posts) {
         localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+      }
+      function openComposer() {
+        step1.style.display = 'none';
+        step2.style.display = '';
+        editingPostId = null;
+        draftAttachments = [];
+        document.querySelector('#adminStep2 .admin-badge').textContent = '✏️ New Post';
+        document.querySelector('#postForm button[type="submit"]').textContent = 'Publish Post ↗';
+        titleInput.value = '';
+        fileInput.value = '';
+        excerptInput.value = '';
+        bodyInput.value = '';
+        var now = new Date();
+        dateInput.value = now.toLocaleString('en-US', { month: 'short' }) + ' ' + now.getFullYear();
+        updatePreview();
+        renderDynamicPosts();
+        setTimeout(function () { titleInput.focus(); }, 80);
+      }
+      function editPost(postId) {
+        var selected = getPosts().find(function (item) { return item.id === postId; });
+        if (!selected) return;
+        editingPostId = selected.id;
+        draftAttachments = selected.attachments || [];
+        document.querySelector('#adminStep2 .admin-badge').textContent = '✏️ Edit Writeup';
+        document.querySelector('#postForm button[type="submit"]').textContent = 'Save Changes ↗';
+        titleInput.value = selected.title || '';
+        fileInput.value = selected.filename || '';
+        dateInput.value = selected.date || '';
+        tagSelect.value = (selected.tag || 'Writeup') + '|' + (selected.tagColor || 'cyan');
+        excerptInput.value = selected.excerpt || '';
+        bodyInput.value = selected.body || '';
+        updatePreview();
+        overlay.classList.add('open');
+        step1.style.display = 'none';
+        step2.style.display = '';
+        titleInput.focus();
       }
       function escapeHtml(str) {
         return String(str)
@@ -765,14 +916,14 @@ Paste a YouTube URL on its own line to embed it."></textarea>
         var div = document.createElement('div');
         div.className = 'blog-card reveal';
         div.dataset.dynamic = post.id;
-        var delBtn = adminUnlocked
-          ? '<button class="bc-delete" data-id="' + escapeHtml(post.id) + '" title="Delete post">✕</button>'
+        var cardActions = adminUnlocked
+          ? '<span class="card-actions"><button class="bc-edit" data-id="' + escapeHtml(post.id) + '" title="Edit post">Edit</button><button class="bc-delete" data-id="' + escapeHtml(post.id) + '" title="Delete post">✕</button></span>'
           : '';
         div.innerHTML =
           '<div class="blog-card-top">' +
             '<span class="bc-dot r"></span><span class="bc-dot y"></span><span class="bc-dot g"></span>' +
             '<span class="bc-file">' + escapeHtml(post.filename) + '</span>' +
-            delBtn +
+            cardActions +
           '</div>' +
           '<div class="blog-card-body">' +
             '<div class="blog-meta">' +
@@ -786,6 +937,10 @@ Paste a YouTube URL on its own line to embed it."></textarea>
               : '<span class="blog-read-more soon">Read More → </span>') +
           '</div>';
         if (adminUnlocked) {
+          div.querySelector('.bc-edit').addEventListener('click', function (e) {
+            e.stopPropagation();
+            editPost(post.id);
+          });
           div.querySelector('.bc-delete').addEventListener('click', function (e) {
             e.stopPropagation();
             if (confirm('Delete "' + post.title + '"?')) {
@@ -820,19 +975,131 @@ Paste a YouTube URL on its own line to embed it."></textarea>
       var dateInput    = document.getElementById('postDate');
       var excerptInput = document.getElementById('postExcerpt');
       var bodyInput    = document.getElementById('postBody');
+      var imageFileInput = document.getElementById('postImageFile');
+      var videoFileInput = document.getElementById('postVideoFile');
+      var audioFileInput = document.getElementById('postAudioFile');
+      var editorPreview = document.getElementById('editorPreview');
+      var editorStatus = document.getElementById('editorStatus');
+
+      function updatePreview() {
+        var source = bodyInput.value.trim();
+        if (!source) {
+          editorPreview.innerHTML = '<span class="editor-preview-empty">Your writeup preview will appear here.</span>';
+          return;
+        }
+        var preview = escapeHtml(source)
+          .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+          .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+          .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+          .replace(/!\[([^\]]*)\]\((attachment:[^)]+)\)/g, '<div class="preview-callout">📷 $1 <code>$2</code></div>')
+          .replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '<img src="$2" alt="$1">')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\n{2,}/g, '<br><br>')
+          .replace(/\n/g, '<br>');
+        preview = preview.replace(/:::(tip|warning|warn|info|danger)(?: ([^\n]+))?<br>([\s\S]*?)<br>:::/gi,
+          '<div class="preview-callout"><strong>$2</strong><br>$3</div>');
+        preview = preview.replace(/:::(answer)(?: ([^\n]+))?<br>([\s\S]*?)<br>:::/gi,
+          '<div class="preview-callout"><strong>🔒 $2</strong><br><em>Answer hidden until published</em></div>');
+        editorPreview.innerHTML = preview;
+        editorStatus.textContent = (editingPostId ? 'Editing existing writeup' : 'New writeup') + ' · ' + source.length.toLocaleString() + ' characters';
+      }
+
+      function insertAtCursor(text) {
+        var start = bodyInput.selectionStart;
+        var end = bodyInput.selectionEnd;
+        var current = bodyInput.value;
+        bodyInput.value = current.slice(0, start) + text + current.slice(end);
+        bodyInput.focus();
+        bodyInput.selectionStart = bodyInput.selectionEnd = start + text.length;
+        updatePreview();
+      }
+      bodyInput.addEventListener('input', updatePreview);
+
+      document.getElementById('addImageUrl').addEventListener('click', function () {
+        var url = window.prompt('Paste the image URL:');
+        if (!url) return;
+        var alt = window.prompt('Short image description:', 'Lab screenshot') || 'Lab screenshot';
+        insertAtCursor('\n\n![' + alt + '](' + url.trim() + ')\n\n');
+      });
+      document.getElementById('addImageFile').addEventListener('click', function () {
+        imageFileInput.click();
+      });
+      imageFileInput.addEventListener('change', function () {
+        var file = imageFileInput.files && imageFileInput.files[0];
+        if (!file) return;
+        if (file.size > 1500000) {
+          window.alert('Please choose an image smaller than 1.5 MB so the writeup remains reliable in browser storage.');
+          imageFileInput.value = '';
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function () {
+          var attachmentId = 'attachment-' + Date.now();
+          draftAttachments.push({ id: attachmentId, name: file.name, data: reader.result });
+          insertAtCursor('\n\n![' + file.name.replace(/\.[^.]+$/, '') + '](' + attachmentId + ')\n\n');
+          imageFileInput.value = '';
+        };
+        reader.onerror = function () {
+          window.alert('The image could not be read. Please try another file.');
+          imageFileInput.value = '';
+        };
+        reader.readAsDataURL(file);
+      });
+      function bindMediaUpload(buttonId, input, kind) {
+        document.getElementById(buttonId).addEventListener('click', function () { input.click(); });
+        input.addEventListener('change', function () {
+          var file = input.files && input.files[0];
+          if (!file) return;
+          if (file.size > 5000000) {
+            window.alert('Please choose a file smaller than 5 MB.');
+            input.value = '';
+            return;
+          }
+          var reader = new FileReader();
+          reader.onload = function () {
+            var id = 'attachment-' + Date.now();
+            draftAttachments.push({ id: id, name: file.name, type: kind, data: reader.result });
+            insertAtCursor('\n\n{{media:' + id + '}}\n\n');
+            input.value = '';
+          };
+          reader.onerror = function () { window.alert('The media file could not be read.'); };
+          reader.readAsDataURL(file);
+        });
+      }
+      bindMediaUpload('addVideoFile', videoFileInput, 'video');
+      bindMediaUpload('addAudioFile', audioFileInput, 'audio');
+      document.getElementById('addHint').addEventListener('click', function () {
+        insertAtCursor('\n\n:::tip Helpful hint\nExplain the useful clue, shortcut, or lesson here.\n:::\n\n');
+      });
+      document.getElementById('addWarning').addEventListener('click', function () {
+        insertAtCursor('\n\n:::warning Safety note\nExplain what to be careful about here.\n:::\n\n');
+      });
+      document.getElementById('addAnswer').addEventListener('click', function () {
+        insertAtCursor('\n\n:::answer Reveal answer\nPut the answer, flag, command output, or solution here.\n:::\n\n');
+      });
 
       function openAdmin() {
-        step1.style.display = '';
-        step2.style.display = 'none';
-        answerInput.value = '';
-        errorEl.classList.remove('visible');
         overlay.classList.add('open');
-        setTimeout(function () { answerInput.focus(); }, 120);
+        errorEl.classList.remove('visible');
+        if (adminUnlocked) {
+          openComposer();
+        } else {
+          step1.style.display = '';
+          step2.style.display = 'none';
+          answerInput.value = '';
+          setTimeout(function () { answerInput.focus(); }, 120);
+        }
       }
       function closeAdmin() { overlay.classList.remove('open'); }
 
       document.getElementById('adminClose').addEventListener('click', closeAdmin);
       document.getElementById('adminClose2').addEventListener('click', closeAdmin);
+      document.getElementById('adminLogout').addEventListener('click', function () {
+        adminUnlocked = false;
+        localStorage.removeItem(ADMIN_SESSION_KEY);
+        closeAdmin();
+        renderDynamicPosts();
+      });
       overlay.addEventListener('click', function (e) { if (e.target === overlay) closeAdmin(); });
 
       document.addEventListener('keydown', function (e) {
@@ -843,13 +1110,16 @@ Paste a YouTube URL on its own line to embed it."></textarea>
       document.getElementById('adminVerify').addEventListener('click', function () {
         if (answerInput.value.trim().toLowerCase() === ADMIN_ANSWER.toLowerCase()) {
           adminUnlocked = true;
+          localStorage.setItem(ADMIN_SESSION_KEY, '1');
           errorEl.classList.remove('visible');
-          step1.style.display = 'none';
-          step2.style.display = '';
-          var now = new Date();
-          dateInput.value = now.toLocaleString('en-US', { month: 'short' }) + ' ' + now.getFullYear();
-          setTimeout(function () { titleInput.focus(); }, 80);
-          renderDynamicPosts();
+          if (pendingEditId) {
+            var requestedPost = getPosts().find(function (item) { return item.id === pendingEditId; });
+            if (requestedPost) editPost(pendingEditId);
+            else openComposer();
+            pendingEditId = null;
+          } else {
+            openComposer();
+          }
         } else {
           errorEl.classList.add('visible');
           answerInput.value = '';
@@ -869,7 +1139,7 @@ Paste a YouTube URL on its own line to embed it."></textarea>
         e.preventDefault();
         var parts = tagSelect.value.split('|');
         var post = {
-          id:       Date.now().toString(),
+          id:       editingPostId || Date.now().toString(),
           title:    titleInput.value.trim(),
           filename: fileInput.value.trim() || toFilename(titleInput.value),
           tag:      parts[0],
@@ -877,13 +1147,20 @@ Paste a YouTube URL on its own line to embed it."></textarea>
           date:     dateInput.value.trim() || new Date().toLocaleString('en-US', { month: 'short' }) + ' ' + new Date().getFullYear(),
           excerpt:  excerptInput.value.trim(),
           body:     bodyInput.value.trim(),
+          attachments: draftAttachments,
         };
         if (!post.title || !post.excerpt) return;
         var posts = getPosts();
-        posts.push(post);
+        var existingIndex = posts.findIndex(function (item) { return item.id === post.id; });
+        if (existingIndex >= 0) posts[existingIndex] = post;
+        else posts.push(post);
         savePosts(posts);
         renderDynamicPosts();
         closeAdmin();
+        editingPostId = null;
+        draftAttachments = [];
+        document.querySelector('#adminStep2 .admin-badge').textContent = '✏️ New Post';
+        document.querySelector('#postForm button[type="submit"]').textContent = 'Publish Post ↗';
         titleInput.value    = '';
         fileInput.value     = '';
         excerptInput.value  = '';
@@ -1495,6 +1772,14 @@ Always try default credentials first: \`admin:admin\`, \`admin:password\`, \`roo
       // Load saved posts on page start
       seedDefaultPosts();
       renderDynamicPosts();
+      if (pendingEditId) {
+        if (adminUnlocked) {
+          editPost(pendingEditId);
+          pendingEditId = null;
+        } else {
+          openAdmin();
+        }
+      }
     })();
   </script>
 
