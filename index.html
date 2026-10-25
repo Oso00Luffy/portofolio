@@ -4,26 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0a0a0f" />
-  <meta name="description" content="Osama Jaradat — Cybersecurity graduate focused on penetration testing, network security, and secure systems." />
-  <title>Osama Jaradat | Cybersecurity Engineer</title>
+  <meta name="description" content="Osama Jaradat — System Administrator and DevOps professional focused on Linux infrastructure, automation, observability, and secure operations." />
+  <title>Osama Jaradat | System Administrator &amp; DevOps</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
+  <div class="persistent-background" aria-hidden="true">
+    <span class="background-orb background-orb-green"></span>
+    <span class="background-orb background-orb-gold"></span>
+    <span class="background-orb background-orb-teal"></span>
+  </div>
 
   <!-- ══ NAVBAR ══ -->
   <nav class="navbar" id="navbar">
     <div class="nav-container">
-      <a href="#home" class="nav-logo">OJ<span class="accent">.</span></a>
+      <a href="#home" class="nav-logo">Osama Jaradat</a>
       <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#certifications">Certs</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="./blog.html">Blog</a></li>
+        <li><a href="./blog.html">articles</a></li>
         <li><a href="image/Osama_Jaradat_Resume_Cyber_Security.pdf" target="_blank" class="nav-cta">Resume ↗</a></li>
       </ul>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -31,12 +31,10 @@
       </button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="#about">About</a>
-      <a href="#skills">Skills</a>
-      <a href="#experience">Experience</a>
-      <a href="#certifications">Certifications</a>
-      <a href="#projects">Projects</a>
-      <a href="./blog.html">Blog</a>
+      <a href="#about">about</a>
+      <a href="#experience">experience</a>
+      <a href="#projects">projects</a>
+      <a href="./blog.html">articles</a>
       <a href="image/Osama_Jaradat_Resume_Cyber_Security.pdf" target="_blank">Resume ↗</a>
     </div>
   </nav>
@@ -50,17 +48,33 @@
     <div class="hero-content">
       <span class="hero-badge">
         <span class="badge-dot"></span>
-        Available for opportunities
+        SYSTEM ADMINISTRATION · AMMAN, JORDAN
       </span>
-      <h1 class="hero-name">Osama<br /><span class="gradient-text">Jaradat</span></h1>
-      <h2 class="hero-title">// Cybersecurity &amp; Network Security</h2>
+      <h1 class="hero-name">Osama Jaradat</h1>
+      <h2 class="hero-title">System Administrator and DevOps professional building reliable Linux infrastructure and practical automation.</h2>
       <p class="hero-desc">
-        Penetration testing · Network infrastructure · Python automation · Practical security engineering.
+        I work across Linux systems, reverse proxies, mail infrastructure, observability, security hardening, and automation — from the terminal to the deployment pipeline.
       </p>
       <div class="hero-actions">
-        <a href="#projects" class="btn-primary">View Projects</a>
-        <a href="#about" class="btn-ghost">About Me</a>
+        <a href="#projects" class="btn-primary">View projects →</a>
+        <a href="https://www.linkedin.com/in/osama-jaradat" target="_blank" rel="noopener" class="btn-ghost">LinkedIn</a>
       </div>
+      <aside class="hero-signal-panel" aria-label="Current focus">
+        <div class="signal-header">
+          <span>LIVE PROFILE</span>
+          <span class="signal-status"><i></i> ONLINE</span>
+        </div>
+        <div class="signal-grid">
+          <div><span>FOCUS</span><strong>SYSTEMS / DEVOPS</strong></div>
+          <div><span>STACK</span><strong>LINUX · BASH · PYTHON</strong></div>
+          <div><span>BASE</span><strong>AMMAN, JO</strong></div>
+        </div>
+        <div class="signal-meter"><span></span></div>
+        <p>Keeping systems reliable, observable, and secure.</p>
+      </aside>
+      <button class="terminal-launch" id="terminalLaunch" type="button">
+        <span>&gt;_</span> explore my résumé and articles via the terminal — open it below
+      </button>
       <div class="hero-socials">
         <a href="https://www.linkedin.com/in/osama-jaradat" target="_blank" rel="noopener" aria-label="LinkedIn">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452H16.89v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a1.974 1.974 0 01-1.977-1.979 1.976 1.976 0 011.977-1.975 1.976 1.976 0 011.979 1.975 1.975 1.975 0 01-1.979 1.979zm1.956 13.019H3.378V9h3.915v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -91,8 +105,8 @@
         </div>
         <div class="about-content">
           <h2 class="section-title">Building Security<br /><span class="gradient-text">Layer by Layer</span></h2>
-          <p class="about-text">Cybersecurity graduate with hands-on internship experience in penetration testing and network infrastructure. Strong practical background in offensive security tooling, Linux environments, and SOC-style monitoring workflows.</p>
-          <p class="about-text">Skilled in Python automation and encryption-focused development, with experience building secure communication systems and applying vulnerability remediation techniques in real lab environments.</p>
+          <p class="about-text">System Administrator and DevOps professional with hands-on experience managing Linux infrastructure, reverse proxies, mail systems, and centralized observability. I work with OpenResty/Nginx, Postfix, SPF, DKIM, DMARC, Loki, Grafana, and Alloy.</p>
+          <p class="about-text">Focused on reliable operations and automation through Bash and Python, with additional experience in threat detection, vulnerability assessment, network support, and secure application development.</p>
           <div class="about-contact">
             <a href="mailto:osama.jaradat@proton.me" class="contact-item">
               <span class="contact-icon">✉</span>osama.jaradat@proton.me
@@ -107,13 +121,14 @@
           <div class="education-card">
             <div class="edu-header">
               <div>
-                <h4>Bachelor of Cybersecurity</h4>
+                <h4>Bachelor Degree of Cyber Security</h4>
                 <p>Tafila Technical University · Tafila, Jordan</p>
               </div>
-              <span class="edu-year">2021 - 2025</span>
+              <span class="edu-year">Feb 2022 - Nov 2025</span>
             </div>
-            <p class="edu-courses">Network Security · Penetration Testing · Malware Analysis · Threat Analysis</p>
-            <p class="edu-courses">Achievements: 23rd place out of 111 teams in BRK_CYS_CTF · Languages: Arabic (Native), English (C1)</p>
+            <p class="edu-courses"><strong>Graduation Project:</strong> SCC_APP - Secure Chat &amp; Encryption Platform</p>
+            <p class="edu-courses">End-to-end encryption · Session validation · Four encryption techniques · Firebase authentication</p>
+            <p class="edu-courses">Languages: Arabic (Native), English (Expert, C1)</p>
           </div>
         </div>
       </div>
@@ -142,6 +157,7 @@
           <h3 class="skill-cat-title"><span class="skill-cat-icon">🔵</span> SOC &amp; Blue Team</h3>
           <div class="skill-tags">
             <span>Incident Monitoring</span><span>Log Analysis</span><span>Threat Detection</span>
+            <span>Loki</span><span>Grafana</span><span>Alloy</span>
             <span>TCP/IP</span><span>DNS</span><span>DHCP</span>
             <span>Wireless Security</span><span>Access Control</span><span>Information Privacy</span>
           </div>
@@ -162,17 +178,18 @@
         </div>
 
         <div class="skill-category-card card-cyan reveal">
-          <h3 class="skill-cat-title"><span class="skill-cat-icon">⚙️</span> Tools &amp; DevOps</h3>
+          <h3 class="skill-cat-title"><span class="skill-cat-icon">⚙️</span> Infrastructure &amp; Automation</h3>
           <div class="skill-tags">
-            <span>Linux Administration</span><span>System Monitoring</span><span>Endpoint Monitoring</span>
-            <span>Git</span><span>GitHub</span><span>CI/CD Basics</span><span>SQL</span>
+            <span>Linux Administration</span><span>System Monitoring</span><span>OpenResty/Nginx</span>
+            <span>Postfix</span><span>SPF/DKIM/DMARC</span><span>Bash Scripting</span><span>Python Automation</span>
+            <span>Git</span><span>GitHub</span><span>CI/CD</span>
           </div>
         </div>
 
         <div class="skill-category-card card-green reveal">
           <h3 class="skill-cat-title"><span class="skill-cat-icon">📊</span> Data &amp; Analytics</h3>
           <div class="skill-tags">
-            <span>Python</span><span>Excel</span><span>Tableau</span><span>Encryption Algorithms</span>
+            <span>Python</span><span>Log Analysis</span><span>Excel</span><span>Tableau</span><span>Encryption Algorithms</span>
           </div>
         </div>
 
@@ -200,15 +217,15 @@
           <div class="timeline-card">
             <div class="timeline-header">
               <div>
-                <h3>Network Engineering Trainee — Estarta Solutions</h3>
-                <span class="timeline-location">Jordan, Amman (Hybrid)</span>
+                <h3>System Administrator — Mnasati Technologies</h3>
+                <span class="timeline-location">Amman, Jordan (On-Site)</span>
               </div>
-              <span class="timeline-date">Apr 2026 – Present</span>
+              <span class="timeline-date">Sep 2026 – Present</span>
             </div>
             <ul class="timeline-list">
-              <li>Selected for an incubator program in collaboration with Cisco NetAcad focused on networking fundamentals.</li>
-              <li>Gaining hands-on experience in switching, routing, and IP addressing including VLANs, OSPF, DHCP, and inter-VLAN routing.</li>
-              <li>Studying network security essentials including ACLs, LAN security, and VPN/IPsec concepts.</li>
+              <li>Administered 10+ Linux server environments, managing OpenResty/Nginx reverse proxies and Postfix email relays.</li>
+              <li>Enforced SPF, DKIM, and DMARC security protocols across primary domain stacks, maintaining 99%+ deliverability.</li>
+              <li>Automated diagnostic and server management workflows using custom Bash scripts, cutting manual tasks by 30%.</li>
             </ul>
           </div>
         </div>
@@ -218,7 +235,25 @@
           <div class="timeline-card">
             <div class="timeline-header">
               <div>
-                <h3>Intern — CrossRealms International</h3>
+                <h3>Summer Camp Instructor - Python &amp; Unity — Consultation and Training Center - PSUT</h3>
+                <span class="timeline-location">Amman, Jordan (On-Site)</span>
+              </div>
+              <span class="timeline-date">Jun 2026 – Aug 2026</span>
+            </div>
+            <ul class="timeline-list">
+              <li>Designed and delivered two parallel coding tracks for students aged 12–18 at PSUT's Summer Coding Club.</li>
+              <li>Built the curriculum from scratch, covering Python fundamentals through OOP and Unity game development with C#.</li>
+              <li>Managed mixed-ability groups with differentiated instruction across 20+ sessions per track.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <h3>Penetration Tester Intern — CrossRealms International</h3>
                 <span class="timeline-location">Remote</span>
               </div>
               <span class="timeline-date">Jul 2025 – Sep 2025</span>
@@ -236,7 +271,7 @@
           <div class="timeline-card">
             <div class="timeline-header">
               <div>
-                <h3>IT Intern — Jordan Data Systems</h3>
+                <h3>IT &amp; Network Intern — Jordan Data Systems</h3>
                 <span class="timeline-location">Jordan, Amman</span>
               </div>
               <span class="timeline-date">Jul 2024 – Sep 2024</span>
@@ -261,38 +296,38 @@
       <div class="cert-grid">
 
         <div class="cert-card reveal">
+          <span class="cert-tag">AI</span>
+          <h3>AWS Certified AI Practitioner</h3>
+          <p>Amazon Web Services certification covering foundational artificial intelligence and machine learning concepts (August 2026).</p>
+          <a href="https://www.credly.com/badges/d4ae48ea-7f54-4b0c-a539-06af11641d71/public_url" target="_blank" rel="noopener" class="cert-link">View Credential →</a>
+        </div>
+
+        <div class="cert-card reveal">
           <span class="cert-tag">Cybersecurity</span>
-          <h3>Google Cybersecurity Professional Certificate</h3>
-          <p>Hands-on professional certification focused on SOC workflows, incident response, SIEM analysis, Linux, Python, and practical security operations (March 2026).</p>
+          <h3>Cybersecurity Defense Architect</h3>
+          <p>Splunk certification focused on designing defensive security capabilities and threat detection workflows (May 2026).</p>
+          <a href="https://www.credly.com/badges/80151e00-511a-4b32-830d-1025251aac15/public_url" target="_blank" rel="noopener" class="cert-link">View Credential →</a>
+        </div>
+
+        <div class="cert-card reveal">
+          <span class="cert-tag">Cybersecurity</span>
+          <h3>Google Cybersecurity</h3>
+          <p>Google professional certificate covering security operations, Linux, Python, SIEM analysis, and incident response (March 2026).</p>
           <a href="https://www.coursera.org/account/accomplishments/professional-cert/certificate/3XO0M78372DP" target="_blank" rel="noopener" class="cert-link">View Credential →</a>
         </div>
 
         <div class="cert-card reveal">
-          <span class="cert-tag">Security</span>
-          <h3>Cyber Associate</h3>
-          <p>World Cyber Security Club foundational certification in core security principles and threat awareness (December 2025). Certificate ID: 57.</p>
-          <a href="https://worldcyberclub.com/certificate_validation" target="_blank" rel="noopener" class="cert-link">Verify Certificate →</a>
-        </div>
-
-        <div class="cert-card reveal">
           <span class="cert-tag">AI &amp; Cloud</span>
-          <h3>Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate</h3>
-          <p>Oracle certification demonstrating expertise in AI fundamentals, OCI services, and cloud AI implementation strategies (October 2025).</p>
+          <h3>OCI 2025 AI Foundations Associate</h3>
+          <p>Oracle certification demonstrating foundational knowledge of artificial intelligence and OCI services (October 2025).</p>
           <a href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=B0A1F2352C88290D1B7ED09AA5C71832191CDC695DB5252B31BAD6180E729F8C" target="_blank" rel="noopener" class="cert-link">View Credential →</a>
         </div>
 
         <div class="cert-card reveal">
           <span class="cert-tag">Data Analytics</span>
           <h3>Advanced Data Analytics</h3>
-          <p>Comprehensive certification covering Excel, Tableau, and Python for business analysis and data-driven decision making (June 2025).</p>
+          <p>Correlation One Tech for Jobs certification covering Excel, Tableau, and Python for data-driven decision making (June 2025).</p>
           <a href="https://www.credential.net/d8e0724b-13a7-472c-bbb8-fb8fb2e0b69a#acc.74N0mBjk" target="_blank" rel="noopener" class="cert-link">View Credential →</a>
-        </div>
-
-        <div class="cert-card reveal">
-          <span class="cert-tag">Development</span>
-          <h3>GitHub Foundations</h3>
-          <p>GitHub certification demonstrating proficiency in version control, collaborative development, and modern DevOps practices (October 2024).</p>
-          <a href="https://www.credly.com/badges/d63b94b3-59e3-415e-b607-109659f19130/linked_in_profile" target="_blank" rel="noopener" class="cert-link">View Credential →</a>
         </div>
 
       </div>
@@ -425,7 +460,7 @@
       <div class="footer-content">
         <div class="footer-left">
           <span class="nav-logo">OJ<span class="accent">.</span></span>
-          <p>Cybersecurity Engineer based in Jordan, Amman.<br />Open to new opportunities.</p>
+          <p>System Administrator and DevOps professional based in Amman, Jordan.<br />Focused on reliable, observable, and secure infrastructure.</p>
         </div>
         <div class="footer-links">
           <a href="https://www.linkedin.com/in/osama-jaradat" target="_blank" rel="noopener">LinkedIn</a>
@@ -442,6 +477,33 @@
     </div>
   </footer>
 
+  <div class="terminal-modal" id="terminalModal" aria-hidden="true">
+    <div class="terminal-modal-backdrop" data-terminal-close></div>
+    <section class="terminal-window" role="dialog" aria-modal="true" aria-labelledby="terminalTitle">
+      <div class="terminal-window-header">
+        <div class="terminal-window-title">
+          <span class="terminal-dot terminal-dot-red"></span>
+          <span class="terminal-dot terminal-dot-yellow"></span>
+          <span class="terminal-dot terminal-dot-green"></span>
+          <span id="terminalTitle">osama@portfolio — bash</span>
+        </div>
+        <div class="terminal-window-controls">
+          <button type="button" aria-label="Minimize terminal" data-terminal-minimize>−</button>
+          <button type="button" aria-label="Close terminal" data-terminal-close>×</button>
+        </div>
+      </div>
+      <div class="terminal-content" id="terminalContent">
+        <div class="terminal-output-line">Welcome. Try <strong>ls</strong>, <strong>cd articles</strong>, <strong>open resume.pdf</strong>, or <strong>help</strong>. Tab completes.</div>
+        <div class="terminal-prompt-line">
+          <span class="terminal-prompt" id="terminalPrompt">osama@portfolio:~$</span>
+          <input id="terminalInput" type="text" aria-label="Terminal command" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <button class="terminal-fab" id="terminalFab" type="button"><span>&gt;_</span> Open terminal</button>
+
   <script src="./slideshow.js"></script>
   <script>
     "use strict";
@@ -454,6 +516,90 @@
       if (scrollHint) {
         scrollHint.classList.toggle('is-hidden', window.scrollY > 90);
       }
+
+      // ── Animated infrastructure network ──
+      (function () {
+        const canvas = document.getElementById('networkCanvas');
+        if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const context = canvas.getContext('2d');
+        if (!context) return;
+
+        const hero = document.querySelector('.hero');
+        const particles = [];
+        let animationFrame;
+        let width = 0;
+        let height = 0;
+
+        function resize() {
+          const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+          const bounds = hero.getBoundingClientRect();
+          width = bounds.width;
+          height = bounds.height;
+          canvas.width = width * pixelRatio;
+          canvas.height = height * pixelRatio;
+          canvas.style.width = `${width}px`;
+          canvas.style.height = `${height}px`;
+          context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+          const count = Math.min(58, Math.max(28, Math.floor(width / 22)));
+          particles.length = 0;
+          for (let index = 0; index < count; index += 1) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              radius: Math.random() * 2 + 1.1,
+              velocityX: (Math.random() - 0.5) * 0.28,
+              velocityY: (Math.random() - 0.5) * 0.28,
+              pulse: Math.random() * Math.PI * 2
+            });
+          }
+        }
+
+        function draw() {
+          context.clearRect(0, 0, width, height);
+          for (const particle of particles) {
+            particle.x += particle.velocityX;
+            particle.y += particle.velocityY;
+            particle.pulse += 0.012;
+            if (particle.x < -10 || particle.x > width + 10) particle.velocityX *= -1;
+            if (particle.y < -10 || particle.y > height + 10) particle.velocityY *= -1;
+          }
+
+          for (let first = 0; first < particles.length; first += 1) {
+            const source = particles[first];
+            for (let second = first + 1; second < particles.length; second += 1) {
+              const target = particles[second];
+              const distance = Math.hypot(source.x - target.x, source.y - target.y);
+              if (distance > 145) continue;
+              context.beginPath();
+              context.moveTo(source.x, source.y);
+              context.lineTo(target.x, target.y);
+              context.strokeStyle = `rgba(141, 187, 115, ${0.34 * (1 - distance / 145)})`;
+              context.lineWidth = 0.9;
+              context.stroke();
+            }
+          }
+
+          for (const particle of particles) {
+            const glow = 0.7 + Math.sin(particle.pulse) * 0.2;
+            context.beginPath();
+            context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+            context.fillStyle = `rgba(212, 162, 76, ${glow})`;
+            context.fill();
+          }
+          animationFrame = requestAnimationFrame(draw);
+        }
+
+        const resizeObserver = new ResizeObserver(resize);
+        resizeObserver.observe(hero);
+        resize();
+        draw();
+        window.addEventListener('pagehide', () => {
+          cancelAnimationFrame(animationFrame);
+          resizeObserver.disconnect();
+        }, { once: true });
+      })();
     });
 
     if (scrollHint) {
@@ -472,6 +618,149 @@
         hamburger.classList.remove('open');
         mobileMenu.classList.remove('open');
       });
+    });
+
+    const terminalModal = document.getElementById('terminalModal');
+    const terminalLaunch = document.getElementById('terminalLaunch');
+    const terminalFab = document.getElementById('terminalFab');
+    const terminalInput = document.getElementById('terminalInput');
+    const terminalContent = document.getElementById('terminalContent');
+    const terminalPrompt = document.getElementById('terminalPrompt');
+    const terminalCloseElements = terminalModal.querySelectorAll('[data-terminal-close]');
+    const terminalMinimize = terminalModal.querySelector('[data-terminal-minimize]');
+    const commandHistory = [];
+    let historyIndex = 0;
+    let terminalPath = '~';
+    function setTerminal(open) {
+      terminalModal.classList.toggle('open', open);
+      terminalModal.setAttribute('aria-hidden', String(!open));
+      document.body.classList.toggle('terminal-open', open);
+      if (open) setTimeout(() => terminalInput.focus(), 0);
+    }
+    [terminalLaunch, terminalFab].forEach(button => button.addEventListener('click', () => setTerminal(true)));
+    terminalCloseElements.forEach(element => element.addEventListener('click', () => setTerminal(false)));
+    terminalMinimize.addEventListener('click', () => setTerminal(false));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') setTerminal(false);
+    });
+
+    const terminalFileSystem = {
+      '~': {
+        directories: ['articles', 'certifications', 'education', 'experience'],
+        files: ['about.txt', 'contact.txt', 'resume.pdf', 'skills.txt']
+      },
+      '~/articles': {
+        directories: [],
+        files: ['security-lab-notes.md']
+      },
+      '~/certifications': {
+        directories: [],
+        files: ['aws-ai-practitioner.cert', 'splunk-defense-architect.cert', 'google-cybersecurity.cert', 'oci-ai-foundations.cert', 'advanced-data-analytics.cert']
+      },
+      '~/education': {
+        directories: [],
+        files: ['cyber-security-degree.txt', 'scc-app.txt']
+      },
+      '~/experience': {
+        directories: [],
+        files: ['mnasati-technologies.txt', 'psut-summer-camp.txt', 'crossrealms-international.txt', 'jordan-data-systems.txt']
+      }
+    };
+    const terminalCommands = {
+      help: () => 'Available: ls, cd <directory>, cd .., cat <file>, open resume.pdf, clear, whoami',
+      ls: () => {
+        const location = terminalFileSystem[terminalPath];
+        return [...location.directories.map(directory => `${directory}/`), ...location.files].join('   ');
+      },
+      whoami: () => 'Osama Jaradat — System Administrator and DevOps professional.',
+      'cat about.txt': () => 'Linux administration, DevOps automation, observability, secure operations, and infrastructure reliability.',
+      'open resume.pdf': () => { window.open('image/Osama_Jaradat_Resume_Cyber_Security.pdf', '_blank', 'noopener'); return 'Opening resume.pdf...'; },
+      clear: () => { terminalContent.querySelectorAll('.terminal-output-line, .terminal-command-line').forEach(line => line.remove()); return ''; }
+    };
+    const fileTargets = {
+      'about.txt': '#about',
+      'contact.txt': '#contact',
+      'skills.txt': '#skills',
+      'cyber-security-degree.txt': '#about',
+      'scc-app.txt': '#projects',
+      'mnasati-technologies.txt': '#experience',
+      'psut-summer-camp.txt': '#experience',
+      'crossrealms-international.txt': '#experience',
+      'jordan-data-systems.txt': '#experience',
+      'security-lab-notes.md': './blog.html',
+      'resume.pdf': 'image/Osama_Jaradat_Resume_Cyber_Security.pdf'
+    };
+    function updateTerminalPrompt() {
+      terminalPrompt.textContent = `osama@portfolio:${terminalPath}$`;
+    }
+    function printTerminalLine(text, className = 'terminal-output-line') {
+      if (!text) return;
+      const line = document.createElement('div');
+      line.className = className;
+      line.textContent = text;
+      terminalContent.insertBefore(line, terminalContent.querySelector('.terminal-prompt-line'));
+      terminalContent.scrollTop = terminalContent.scrollHeight;
+    }
+    terminalInput.addEventListener('keydown', event => {
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        const currentDirectory = terminalFileSystem[terminalPath];
+        const options = ['help', 'ls', 'whoami', 'clear', 'cat about.txt', 'open resume.pdf', 'cd ..']
+          .concat(currentDirectory.directories.map(directory => `cd ${directory}/`))
+          .concat(currentDirectory.files.map(file => `cat ${file}`));
+        const match = options.find(option => option.startsWith(terminalInput.value.toLowerCase()));
+        if (match) terminalInput.value = match;
+        return;
+      }
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        if (historyIndex > 0) terminalInput.value = commandHistory[--historyIndex];
+        return;
+      }
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        historyIndex = Math.min(commandHistory.length, historyIndex + 1);
+        terminalInput.value = commandHistory[historyIndex] || '';
+        return;
+      }
+      if (event.key !== 'Enter') return;
+      const command = terminalInput.value.trim().toLowerCase();
+      if (!command) return;
+      commandHistory.push(command);
+      historyIndex = commandHistory.length;
+      printTerminalLine(`${terminalPrompt.textContent} ${command}`, 'terminal-command-line');
+      terminalInput.value = '';
+      if (command.startsWith('cd ')) {
+        const destination = command.slice(3).trim().replace(/\/$/, '');
+        if (destination === '..') {
+          if (terminalPath !== '~') terminalPath = '~';
+          updateTerminalPrompt();
+          return;
+        }
+        const nextPath = terminalPath === '~' ? `~/${destination}` : `${terminalPath}/${destination}`;
+        if (terminalFileSystem[nextPath]) {
+          terminalPath = nextPath;
+          updateTerminalPrompt();
+        } else printTerminalLine(`bash: cd: ${destination}: No such directory`);
+        return;
+      }
+      if (terminalCommands[command]) {
+        printTerminalLine(terminalCommands[command]());
+      } else if (command.startsWith('cat ')) {
+        const file = command.slice(4).trim();
+        const target = fileTargets[file];
+        if (target) {
+          printTerminalLine(`Opening ${file}...`);
+          if (target.startsWith('#')) {
+            setTerminal(false);
+            window.location.hash = target.slice(1);
+          }
+        } else printTerminalLine(`cat: ${file}: No such file or directory`);
+      } else if (command.startsWith('open ')) {
+        const file = command.slice(5).trim();
+        if (file === 'resume.pdf') printTerminalLine(terminalCommands['open resume.pdf']());
+        else printTerminalLine(`open: ${file}: No such file or directory`);
+      } else printTerminalLine(`bash: ${command}: command not found. Type "help".`);
     });
 
     // ── Scroll-reveal ──
