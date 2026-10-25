@@ -295,6 +295,16 @@
       display: block;
       box-shadow: 0 16px 48px rgba(0,0,0,0.48);
     }
+    .missing-attachment {
+      margin: 2rem 0;
+      padding: 1.2rem 1.5rem;
+      border: 1px dashed rgba(255,159,67,.45);
+      border-radius: 9px;
+      color: #ffb066;
+      font-family: var(--mono);
+      font-size: 1.25rem;
+      background: rgba(255,159,67,.06);
+    }
 
     /* ── Tables ── */
     .post-content table {
@@ -581,6 +591,19 @@
 
     function resolveAttachments(md, post) {
       const attachments = Array.isArray(post.attachments) ? post.attachments : [];
+      md = md.replace(/!\[([^\]]*)\]\(((?:attachment:)?attachment-[^)]+)\)/g, function (_, alt, reference) {
+        const id = reference.replace(/^attachment:/, '');
+        const attachment = attachments.find(function (item) { return item.id === id; });
+        if (!attachment || attachment.type === 'video' || attachment.type === 'audio') {
+          return '<div class="missing-attachment">Image unavailable: ' + escHtml(alt || id) + '</div>';
+        }
+        const source = String(attachment.data || '')
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        return '<img src="' + source + '" alt="' + escHtml(alt || attachment.name || 'Writeup image') + '">';
+      });
       md = md.replace(/\{\{media:([^}]+)\}\}/g, function (_, id) {
         const attachment = attachments.find(function (item) { return item.id === id; });
         if (!attachment) return '';
@@ -590,9 +613,8 @@
         }
         return '<audio controls preload="metadata" style="width:100%;margin:2rem 0"><source src="' + source + '"></audio>';
       });
-      return md.replace(/\((attachment:[^)]+)\)/g, function (_, id) {
-        const attachment = attachments.find(function (item) { return item.id === id; });
-        return attachment ? '(' + attachment.data + ')' : '(#' + id + ')';
+      return md.replace(/\(((?:attachment:)?attachment-[^)]+)\)/g, function (_, reference) {
+        return '(#' + reference + ')';
       });
     }
 

@@ -991,7 +991,13 @@ Paste a YouTube URL on its own line to embed it."></textarea>
           .replace(/^### (.+)$/gm, '<h3>$1</h3>')
           .replace(/^## (.+)$/gm, '<h2>$1</h2>')
           .replace(/^# (.+)$/gm, '<h2>$1</h2>')
-          .replace(/!\[([^\]]*)\]\((attachment:[^)]+)\)/g, '<div class="preview-callout">📷 $1 <code>$2</code></div>')
+          .replace(/!\[([^\]]*)\]\(((?:attachment:)?attachment-[^)]+)\)/g, function (_, alt, reference) {
+            var id = reference.replace(/^attachment:/, '');
+            var attachment = draftAttachments.find(function (item) { return item.id === id; });
+            return attachment && attachment.data
+              ? '<img src="' + attachment.data + '" alt="' + alt + '">'
+              : '<div class="preview-callout">📷 ' + alt + '</div>';
+          })
           .replace(/!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g, '<img src="$2" alt="$1">')
           .replace(/`([^`]+)`/g, '<code>$1</code>')
           .replace(/\n{2,}/g, '<br><br>')
@@ -1036,7 +1042,7 @@ Paste a YouTube URL on its own line to embed it."></textarea>
         reader.onload = function () {
           var attachmentId = 'attachment-' + Date.now();
           draftAttachments.push({ id: attachmentId, name: file.name, data: reader.result });
-          insertAtCursor('\n\n![' + file.name.replace(/\.[^.]+$/, '') + '](' + attachmentId + ')\n\n');
+          insertAtCursor('\n\n![' + file.name.replace(/\.[^.]+$/, '') + '](attachment:' + attachmentId + ')\n\n');
           imageFileInput.value = '';
         };
         reader.onerror = function () {
